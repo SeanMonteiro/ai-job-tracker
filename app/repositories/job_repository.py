@@ -1,31 +1,25 @@
 # DB Access Layer
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 from app.models.job import Job
 from app.schemas.job import JobCreate
-from app.schemas.job import JobResponse
-import logging
-from app.core.logger.logging_decorator import log_db
-# logger =logging.getLogger("ai-job-tracker")
+from app.core.logger.db_decorator import db_operation
 
-@log_db("CREATE_JOB","Job")
-def create_job(db:Session, job: JobCreate):
-    db_job = Job (
-        title = job.title,
-        company = job.company,
-        description = job.description
-    )
-    db.add(db_job)
-    db.commit()
-    db.refresh(db_job)
-    # logger.info(f"Created Job {db_job}")
-    return db_job
+class JobRepository:
+    def __init__(self, db:Session):
+        self.db = db
 
-@log_db("GET_JOB","Job")
-def get_job(db:Session, job_id:int ):
-    # logger.info(f"Fetching job {job_id}")
-    return db.query(Job).filter(Job.id == job_id).first()
+    @db_operation("CREATE_JOB","Job")
+    def create_job(self, job):
+        self.db.add(job)
+        self.db.commit()
+        self.db.refresh(job)
+        return job
 
-@log_db("GET_ALL_JOB","Jobs")
-def get_all_jobs(db:Session):
-    # logger.info(f"Fetching All jobs")
-    return db.query(Job).all()
+    @db_operation("GET_JOB","Job")
+    def get_job(self, job_id):
+        return self.db.query(Job).filter(Job.id == job_id).first()
+        
+    @db_operation("GET_ALL_JOBS", "Job")    
+    def get_all_jobs(self):
+        return self.db.query(Job).all()
