@@ -1,6 +1,6 @@
 # ORM 
 from sqlalchemy import Column, Integer, String, Text
-from app.core.database import Base
+from app.core.database.database import Base
 
 class Job(Base):
     __tablename__ = "jobs"
@@ -9,3 +9,6 @@ class Job(Base):
     title = Column(String(255), nullable=False)
     company = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
+
+    def __repr__(self):
+        return f"<Job(id={self.id}, title={self.title})>"
