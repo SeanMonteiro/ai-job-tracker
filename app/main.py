@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from app.core.database.database import Base, engine
 from app.api.routes import router
 from app.core.logger.logger import setup_logger
@@ -12,9 +13,18 @@ from app.handlers import (
 from app.exceptions import JobNotFoundException
 from app.exceptions import JobValidationException
 
-app = FastAPI()
 setup_logger()
 logger = logging.getLogger("ai-job-tracker")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Application Startup")
+    Base.metadata.create_all(bind=engine)
+    yield
+    logger.info("Application Shutdown")
+
+
+app = FastAPI(lifespan=lifespan)
 
 # Middleware
 app.add_middleware(RequestIDMiddleware)
@@ -24,17 +34,14 @@ app.add_exception_handler(JobNotFoundException, job_not_found_handler)
 app.add_exception_handler(JobValidationException, job_validation_handler)
 app.add_exception_handler(Exception, global_exception_handler)
 
-# register routes
+# Routes
 app.include_router(router)
-
-@app.on_event("startup")
-def start_up():
-    logger.info("Application StartUp")
-    Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def root():
-    logger.info("Home Page Up")
-    return {
-        "message": "AI Job Tracker API is running"
-    }
+    return {"message": "AI Job Tracker API is running"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
