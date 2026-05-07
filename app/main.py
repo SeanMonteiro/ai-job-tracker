@@ -6,12 +6,10 @@ from app.core.logger.logger import setup_logger
 import logging
 from app.core.logger.middleware import RequestIDMiddleware
 from app.handlers import (
-    job_not_found_handler,
-    job_validation_handler,
+    app_exception_handler,
     global_exception_handler
-)
-from app.exceptions import JobNotFoundException
-from app.exceptions import JobValidationException
+    )
+from app.exceptions import AppException
 
 setup_logger()
 logger = logging.getLogger("ai-job-tracker")
@@ -30,8 +28,9 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(RequestIDMiddleware)
 
 # Map Exception Handlers
-app.add_exception_handler(JobNotFoundException, job_not_found_handler)
-app.add_exception_handler(JobValidationException, job_validation_handler)
+# app.add_exception_handler(JobNotFoundException, job_not_found_handler)
+# app.add_exception_handler(JobValidationException, job_validation_handler)
+app.add_exception_handler(AppException, app_exception_handler)
 app.add_exception_handler(Exception, global_exception_handler)
 
 # Routes

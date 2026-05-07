@@ -15,14 +15,14 @@ Backend API built with FastAPI to track and manage job applications.
 - Service Layer architecture
 - Repository Pattern implementation
 - Dependency Injection for services / repositories
-- Structured logging system
-- Request Correlation middleware (Request ID tracking)
-- Global exception handling
-- Custom Application exceptions
+- Structured logging with request correlation (Request ID middleware)
+- Centralized exceptions handling (AppException based system)
+- Structured HTTP over mapping via domain exceptions
 - Rotating file log management
 - Clean layered backend structure
 - Database migration system using Alembic
 - Model-driven schema generation using SQLAlchemy metadata + Alembic Autogenerate
+- Standardized API response contract (success/data/message structure)
 
 ## API Features
 - Create jobs

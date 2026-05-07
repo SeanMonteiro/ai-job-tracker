@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from app.schemas.job import JobCreate, JobResponse
 from app.core.dependencies import get_job_service
 from app.services.job_service import JobService
+from app.core.response import success_response
 
 router = APIRouter()
 
@@ -11,20 +12,14 @@ def create_job(
         job_service:JobService = Depends(get_job_service)
     ):
     result = job_service.create_job(job)
-    return {
-        "success": True,
-        "data": result
-    }
+    return success_response(data=result)
 
 @router.get("/jobs")
 def get_jobs(
         job_service:JobService = Depends(get_job_service)
     ):
     result =  job_service.get_all_jobs()
-    return {
-        "success": True,
-        "data": result
-    }
+    return success_response(data=result)
 
 @router.get("/jobs/{job_id}")
 def get_job(
@@ -32,7 +27,4 @@ def get_job(
         job_service:JobService = Depends(get_job_service)
     ):
     result = job_service.get_job(job_id)
-    return {
-        "success": True,
-        "data": result
-    }
+    return success_response(data=result)
