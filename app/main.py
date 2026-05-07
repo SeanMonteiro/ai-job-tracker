@@ -19,7 +19,7 @@ logger = logging.getLogger("ai-job-tracker")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Application Startup")
-    Base.metadata.create_all(bind=engine)
+    # Base.metadata.create_all(bind=engine)
     yield
     logger.info("Application Shutdown")
 

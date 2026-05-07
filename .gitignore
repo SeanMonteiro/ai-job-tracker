@@ -21,3 +21,6 @@ logs/
 
 # Postgres Scripts
 postgresql/
+
+# Alembic Cache
+migrations/__pycache__

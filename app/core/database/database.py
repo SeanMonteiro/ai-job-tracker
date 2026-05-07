@@ -5,6 +5,8 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 load_dotenv()
 
+Base = declarative_base()
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise Exception("DATABASE URL is not set")
@@ -20,8 +22,6 @@ SessionLocal = sessionmaker(
     autoflush = False,
     bind = engine
 )
-
-Base = declarative_base()
 
 # Dependency Injection
 def get_db():
