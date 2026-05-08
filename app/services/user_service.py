@@ -14,7 +14,7 @@ class UserService:
             raise AppException("Email already exists", 400)
         
         # Check if username already in use
-        if self.repo.get_by_user(user_data.username):
+        if self.repo.get_by_username(user_data.username):
             raise AppException("Username already exists", 400)
         
         hash_pw = hash_password(user_data.password)
@@ -22,7 +22,7 @@ class UserService:
         user = User(
             username = user_data.username,
             email = user_data.email,
-            hash_password = hash_pw
+            hashed_password = hash_pw
         )
 
         return self.repo.create_user(user)

@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.core.database.database import Base, engine
-from app.api.routes import router
 from app.core.logger.logger import setup_logger
 import logging
 from app.core.logger.middleware import RequestIDMiddleware
@@ -10,6 +9,10 @@ from app.handlers import (
     global_exception_handler
     )
 from app.exceptions import AppException
+
+# Import routes
+from app.api.auth_routes import router as auth_router
+from app.api.job_routes import router as job_router
 
 setup_logger()
 logger = logging.getLogger("ai-job-tracker")
@@ -21,20 +24,18 @@ async def lifespan(app: FastAPI):
     yield
     logger.info("Application Shutdown")
 
-
 app = FastAPI(lifespan=lifespan)
 
 # Middleware
 app.add_middleware(RequestIDMiddleware)
 
 # Map Exception Handlers
-# app.add_exception_handler(JobNotFoundException, job_not_found_handler)
-# app.add_exception_handler(JobValidationException, job_validation_handler)
 app.add_exception_handler(AppException, app_exception_handler)
 app.add_exception_handler(Exception, global_exception_handler)
 
 # Routes
-app.include_router(router)
+app.include_router(job_router)
+app.include_router(auth_router)
 
 @app.get("/")
 def root():

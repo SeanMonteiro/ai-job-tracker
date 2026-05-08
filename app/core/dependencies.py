@@ -8,7 +8,7 @@ from app.repositories.user_repository import UserRepository
 
 # Import Services
 from app.services.job_service import JobService
-from app.services.job_service import UserService
+from app.services.user_service import UserService
 
 def get_job_service(db:Session = Depends(get_db)):
     repo = JobRepository(db)
