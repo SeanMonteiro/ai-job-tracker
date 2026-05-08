@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.schemas.job import JobCreate, JobResponse
-from app.core.dependencies import get_job_service
+from app.dependencies.injector import get_job_service
 from app.services.job_service import JobService
 from app.core.response import success_response
 
