@@ -7,3 +7,6 @@ class User(Base):
     username = Column(String, unique=True, nullable=False, index=True)
     email = Column(String, unique=True, nullable=False, index=True)
     hashed_password = Column(String, nullable=False)
+
+    def __repr__(self):
+        return f"<User(username={self.username}, email={self.email})>"

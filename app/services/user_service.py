@@ -1,6 +1,7 @@
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.core.security import hash_password
+from app.core.security.hashpassword import hash_password, verify_password
+from app.core.security.jwt import create_access_token
 from app.exceptions import AppException
 
 class UserService:
@@ -24,5 +25,24 @@ class UserService:
             email = user_data.email,
             hashed_password = hash_pw
         )
-
         return self.repo.create_user(user)
+    
+    def login_user(self, email:str, password:str):
+        user = self.repo.get_by_email(email)
+        if not user:
+            raise AppException("Invalid credentials", 401)
+        
+        if not verify_password(password, user.hashed_password):
+            raise AppException("Invalid credentials", 401)
+        
+        token = create_access_token (
+            data = {
+                "sub": str(user.id),
+                "email": user.email
+            }
+        )
+
+        return {
+            "access_token" : token,
+            "token_type" : "bearer"
+        }
