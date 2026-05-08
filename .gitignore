@@ -24,3 +24,6 @@ postgresql/
 
 # Alembic Cache
 migrations/__pycache__
+
+# Temporay Test Files
+temp_test/*
