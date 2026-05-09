@@ -3,10 +3,7 @@ from jose import jwt, JWTError
 
 SECRET_KEY = "Purgatory"
 ALGORITHM = "HS256"
-# ACCESS_TOKEN_EXPIRES_MINUTES = 60
-
-# TEST ON JWT.IO
-ACCESS_TOKEN_EXPIRES_MINUTES = 2
+ACCESS_TOKEN_EXPIRES_MINUTES = 15
 
 def create_access_token(data:dict):
     to_encode = data.copy()

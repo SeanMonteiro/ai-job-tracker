@@ -20,7 +20,7 @@ def get_current_user(
     user_id = payload.get("sub")
 
     if user_id is None:
-        raise AppException("Invalio token payload", 401)
+        raise AppException("Invalid token payload", 401)
     
     try:
         user_id = int(user_id)

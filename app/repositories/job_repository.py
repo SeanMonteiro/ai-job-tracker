@@ -19,5 +19,5 @@ class JobRepository:
         return self.db.query(Job).filter(Job.id == job_id).first()
         
     @db_operation("GET_ALL_JOBS", "Job")    
-    def get_all_jobs(self):
-        return self.db.query(Job).all()
+    def get_all_jobs(self, user_id:int):
+        return self.db.query(Job).filter(Job.user_id == user_id).all()
