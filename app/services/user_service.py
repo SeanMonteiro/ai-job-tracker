@@ -8,6 +8,8 @@ class UserService:
     def __init__(self, repo):
         self.repo = repo
 
+    # REGISTER USER
+    
     def register_user(self, user_data: UserCreate):
         
         # Check for duplicate emil
@@ -27,6 +29,8 @@ class UserService:
         )
         return self.repo.create_user(user)
     
+    # LOGIN USER
+
     def login_user(self, email:str, password:str):
         user = self.repo.get_by_email(email)
         if not user:

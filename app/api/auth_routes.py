@@ -12,6 +12,8 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+# REGISTER USER 
+ 
 @router.post("/register")
 def register_user(
     user: UserCreate,
@@ -19,6 +21,8 @@ def register_user(
 ):
     result = user_service.register_user(user)
     return success_response(data=result)
+
+# LOGIN USER
 
 @router.post("/login")
 def login(

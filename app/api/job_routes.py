@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends
-from app.schemas.job import JobCreate, JobResponse
+from app.schemas.job import JobCreate, JobUpdate
 from app.dependencies.injector import get_job_service
 from app.dependencies.auth import get_current_user
 from app.services.job_service import JobService
 from app.core.response import success_response
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
+
+# CREATE JOB BY USER
 
 @router.post("/")
 def create_job(
@@ -16,6 +18,8 @@ def create_job(
     result = job_service.create_job(job, current_user.id)
     return success_response(data=result)
 
+# GET JOBS FOR USER
+
 @router.get("/")
 def get_jobs(
         job_service:JobService = Depends(get_job_service),
@@ -24,6 +28,8 @@ def get_jobs(
     result =  job_service.get_all_jobs(current_user.id)
     return success_response(data=result)
 
+# GET JOB FOR A USER
+
 @router.get("/{job_id}")
 def get_job(
         job_id: int, 
@@ -31,4 +37,33 @@ def get_job(
         current_user =  Depends(get_current_user)
     ):
     result = job_service.get_job(job_id, current_user.id)
+    return success_response(data=result)
+
+# UPDATE A JOB FOR THAT USER
+
+@router.put("/{job_id}")
+def update_job(
+    job_id: int,
+    payload: JobUpdate,
+    job_service: JobService = Depends(get_job_service),
+    current_user = Depends(get_current_user)
+):
+    result = job_service.update_job(
+        job_id,
+        current_user.id,
+        payload
+    )   
+    return success_response(data=result)
+
+# DELETE A JOB FOR A USER
+
+@router.delete("/{job_id}")
+def delete_job(
+    job_id: int,
+    job_service: JobService = Depends(get_job_service),
+    current_user = Depends(get_current_user)
+):
+    result = job_service.delete_job(
+        job_id, current_user.id
+    )
     return success_response(data=result)

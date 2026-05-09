@@ -21,3 +21,14 @@ class JobRepository:
     @db_operation("GET_ALL_JOBS", "Job")    
     def get_all_jobs(self, user_id:int):
         return self.db.query(Job).filter(Job.user_id == user_id).all()
+    
+    @db_operation("UPDATE_JOB","JOB")
+    def update_job(self, job):
+        self.db.commit()
+        self.db.refresh(job)
+        return job
+    
+    @db_operation("DELETE_JOB","JOB")
+    def delete_job(self, job):
+        self.db.delete(job)
+        self.db.commit()
