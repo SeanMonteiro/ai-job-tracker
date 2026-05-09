@@ -10,14 +10,21 @@ Backend API built with FastAPI to track and manage job applications.
 - Python 3.11 (WSL)
 - Dependency Injection (FastAPI Depends)
 - Alembic (Database Migrations)
+- JWT Authentication
+- Passlib (Password Hashing)
+- Python-Jose (JWT Handling)
 
 ## Architecture and Backend Features
 - Service Layer architecture
 - Repository Pattern implementation
 - Dependency Injection for services / repositories
 - Structured logging with request correlation (Request ID middleware)
-- Centralized exceptions handling (AppException based system)
-- Structured HTTP over mapping via domain exceptions
+- Centralized exception handling (AppException-based system)
+- Domain-driven HTTP exception mapping
+- JWT authentication and authorization layer
+- Password hashing and credential verification
+- Multi-user ownership enforcement for protected resources
+- Route-level authentication using FastAPI dependency injection
 - Rotating file log management
 - Clean layered backend structure
 - Database migration system using Alembic
@@ -25,9 +32,14 @@ Backend API built with FastAPI to track and manage job applications.
 - Standardized API response contract (success/data/message structure)
 
 ## API Features
+- User registration and login
+- JWT-based authentication
 - Create jobs
-- List jobs
-- Fetch job by ID
+- Update jobs
+- Delete jobs
+- List authenticated user jobs
+- Fetch job by ID with ownership validation
+- Protected API routes
 - REST API with Swagger UI
 - Response Validation using Pydantic Schemas
 
@@ -36,16 +48,17 @@ Backend API built with FastAPI to track and manage job applications.
 - Initial migration for 'jobs' table
 - Upgrade / Downgrade support for schema changes
 - Version-controlled database schema history
+- User-to-job relational ownership mapping
+- Foreign key constraints for multi-user data isolation
 
 ## Engineering Practices
 - Incremental feature branching workflow
 - Production style backend refactoring approach
 - Database migration strategy (schema versioning instead of manual SQL)
 - Clean separation of concerns across layers
+- Stateless authentication architecture using JWT
+- Ownership-based authorization enforcement
+- Layered authentication and authorization separation
 
 ## Upcoming
-- User Accounts
-- Login System (JWT)
-- Protected routes
-- User-specific job tracking
-- Basic security layer
+- Phase 5 AI differentiation layer
