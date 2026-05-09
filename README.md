@@ -61,4 +61,10 @@ Backend API built with FastAPI to track and manage job applications.
 - Layered authentication and authorization separation
 
 ## Upcoming
-- Phase 5 AI differentiation layer
+- Refresh token system
+- AI-powered job description analysis
+- Resume to Job match scoring
+- AI generated application insights
+- Readis cache layer
+- Docker containerization
+- CI/CD pipeline
