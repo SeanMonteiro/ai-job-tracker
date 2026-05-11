@@ -10,7 +10,7 @@ class OpenAIClient:
 
     def chat(self, messages):
         response = self.client.chat.completions.create(
-            model = "gpt-40-mini",
+            model = "gpt-4o-mini",
             messages = messages,
             temperature = 0.2
         )

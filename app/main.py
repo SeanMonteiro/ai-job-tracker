@@ -13,6 +13,7 @@ from app.exceptions import AppException
 # Import routes
 from app.api.auth_routes import router as auth_router
 from app.api.job_routes import router as job_router
+from app.api.ai_routes import router as ai_router
 
 setup_logger()
 logger = logging.getLogger("ai-job-tracker")
@@ -36,6 +37,7 @@ app.add_exception_handler(Exception, global_exception_handler)
 # Routes
 app.include_router(job_router)
 app.include_router(auth_router)
+app.include_router(ai_router)
 
 @app.get("/")
 def root():
