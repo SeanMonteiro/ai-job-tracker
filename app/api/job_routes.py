@@ -1,21 +1,24 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from app.schemas.job import JobCreate, JobUpdate
-from app.dependencies.injector import get_job_service
+from app.dependencies.injector import get_job_service, get_job_pipeline_service
 from app.dependencies.auth import get_current_user
 from app.services.job_service import JobService
+from app.services.job_pipeline_service import JobPipelineService
 from app.core.response import success_response
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
-# CREATE JOB BY USER
+# CREATE JOB BY USER - STRUCTURED JSON DATA
 
 @router.post("/")
 def create_job(
-        job:JobCreate, 
-        job_service:JobService = Depends(get_job_service),
+        job: JobCreate, 
+        pipeline: JobPipelineService = Depends(get_job_pipeline_service),
         current_user = Depends(get_current_user)
     ):
-    result = job_service.create_job(job, current_user.id)
+    result = pipeline.create_structure_job_with_analysis(
+        job_data = job, user_id= current_user.id
+    )
     return success_response(data=result)
 
 # GET JOBS FOR USER
@@ -43,7 +46,7 @@ def get_job(
 
 @router.put("/{job_id}")
 def update_job(
-    job_id: int,
+    job_id: int, 
     payload: JobUpdate,
     job_service: JobService = Depends(get_job_service),
     current_user = Depends(get_current_user)

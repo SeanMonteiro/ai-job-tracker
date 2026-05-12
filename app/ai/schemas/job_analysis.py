@@ -1,10 +1,9 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Literal
 
-class JobAnalysisRespone(BaseModel):
+class JobAnalysisResponse(BaseModel):
+    title: str
+    company: str
     skills: List[str]
-    experience_level: str
+    experience_level: Literal["Junior", "Mid", "Senior"]
     summary: str
-
-# class JobAnalysisRequest(BaseModel):
-#     job_description: str

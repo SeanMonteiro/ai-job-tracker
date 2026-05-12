@@ -6,7 +6,7 @@ class JobService:
     def __init__(self, repo):
         self.repo = repo
 
-    # CREATE JOB
+    # CREATE JOB - structured json
 
     def create_job(self, job_data, user_id: int):
         if not job_data.title or len(job_data.title.strip()) < 3:
