@@ -1,3 +1,5 @@
+PROMPT_VERSION = "v1"
+
 JOB_ANALYSIS_PROMPT = """
 You are an expert technical recruiter.
 

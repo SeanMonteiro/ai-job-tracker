@@ -1,5 +1,5 @@
 from app.ai.clients.openai_client import OpenAIClient
-from app.ai.prompts.job_analysis_prompt import JOB_ANALYSIS_PROMPT
+from app.ai.prompts.job_analysis_prompt import JOB_ANALYSIS_PROMPT, PROMPT_VERSION
 from app.ai.schemas.job_analysis import JobAnalysisResponse
 from app.ai.utils.json_parser import extract_json_from_text
 from app.exceptions import AppException
@@ -33,8 +33,12 @@ class JobAnalysisService:
             data = extract_json_from_text(response)
             structured = JobAnalysisResponse(**data)
             # logger.info(f"AI PARSED OUTPUT RAW : {structured.model_dump()}")
-            return structured.model_dump()
-        
+            
+            return {
+                "analysis": structured.model_dump(),
+                "model_version": self.client.model,
+                "prompt_version": PROMPT_VERSION
+            }
         except Exception as e:
             logger.error(f"AI ANALYSIS FAILED: {str(e)}")
             raise AppException("AI job analysis failed", 500)

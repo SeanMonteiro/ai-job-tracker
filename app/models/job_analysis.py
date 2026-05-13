@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, ForeignKey, JSON
+from sqlalchemy import Column, Integer, Text, ForeignKey, JSON, String
 from app.core.database.database import Base
 
 class JobAnalysis(Base):
@@ -7,5 +7,7 @@ class JobAnalysis(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     job_id = Column(Integer, ForeignKey("jobs.id"))
-    job_description = Column(Text)
+    version = Column(Integer, default=1)
+    model_version = Column(String, nullable=False)
+    prompt_version = Column(String, nullable=False)
     analysis = Column(JSON)

@@ -1,16 +1,14 @@
 import os
 from openai import OpenAI
-# from dotenv import load_dotenv
-
-# load_dotenv()
 
 class OpenAIClient:
     def __init__(self):
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.model = os.getenv("OPENAI_MODEL")
 
     def chat(self, messages):
         response = self.client.chat.completions.create(
-            model = "gpt-4o-mini",
+            model = self.model,
             messages = messages,
             temperature = 0.2
         )

@@ -17,3 +17,17 @@ class JobAnalysisRepository:
     @db_operation("GET_ANALYSIS", "JOB_ANALYSIS")
     def get_by_id(self, analysis_id: int):
         return self.db.query(JobAnalysis).filter(JobAnalysis.id == analysis_id).first()
+    
+    @db_operation("GET_NEXT_VERSION", "AI_ANALYSIS")
+    def get_next_version(self, job_id: int):
+        latest = (
+            self.db.query(JobAnalysis)
+            .filter(JobAnalysis.job_id == job_id)
+            .order_by(JobAnalysis.version.desc())
+            .first()
+        )
+
+        if not latest:
+            return 1
+        
+        return latest.version + 1 
