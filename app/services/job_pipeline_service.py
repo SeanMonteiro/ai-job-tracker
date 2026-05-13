@@ -93,7 +93,7 @@ class JobPipelineService:
                 "analysis": saved_analysis
             }
         except Exception as e:
-            logger.error(f"PIPELINE FAILD | raw_flow | user_id={user_id} | error={str(e)}")
+            logger.error(f"PIPELINE FAILED | raw_flow | user_id={user_id} | error={str(e)}")
             exc_info=True
 
             return {
@@ -101,3 +101,37 @@ class JobPipelineService:
                 "analysis": None,
                 "error": str(e)
             }
+        
+    def analyze_existing_job (self, job_id: int, user_id: int):
+        logger.info(f"PIPELINE START: retry analysis | job_id={job_id}")
+        try:
+            job = self.job_service.get_job(job_id, user_id)
+            job_response = JobResponse(
+                id = job.id,
+                title = job.title,
+                company = job.company,
+                description = job.description
+            )
+            
+            analysis_result = self.job_analysis_service.analyze(job.description)
+
+            next_version = self.analysis_repo.get_next_version(job.id)
+
+            record = JobAnalysis (
+                job_id = job.id,
+                user_id = user_id,
+                version = next_version,
+                model_version = analysis_result["model_version"],
+                prompt_version = analysis_result["prompt_version"],
+                analysis = analysis_result["analysis"]
+            )
+
+            saved_analysis = self.analysis_repo.save(record)
+            
+            return {
+                "job": job_response,
+                "analysis": saved_analysis 
+            }
+
+        except Exception as e:
+            logger.error(f"PIPELINE FAILED | retry_analysis | job_id={job_id}")

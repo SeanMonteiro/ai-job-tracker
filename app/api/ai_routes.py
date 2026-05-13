@@ -8,9 +8,18 @@ router = APIRouter(prefix="/ai", tags=["AI"])
 
 @router.post("/jobs/raw")
 def create_job(
-        description: str = Body(..., media_type="text/plain"), 
-        job_pipeline_service: JobPipelineService = Depends(get_job_pipeline_service),
-        current_user = Depends(get_current_user)
-    ):
+    description: str = Body(..., media_type="text/plain"), 
+    job_pipeline_service: JobPipelineService = Depends(get_job_pipeline_service),
+    current_user = Depends(get_current_user)
+):
     result = job_pipeline_service.create_raw_job_with_analysis(description, current_user.id)
+    return success_response(data=result)
+
+@router.post("jobs/{job_id}/analyze")
+def analyze_existing_job(
+    job_id: int,
+    job_pipeline_service: JobPipelineService = Depends(get_job_pipeline_service),
+    current_user = Depends(get_current_user)
+):
+    result = job_pipeline_service.analyze_existing_job(job_id, current_user.id)
     return success_response(data=result)
