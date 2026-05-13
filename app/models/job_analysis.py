@@ -6,5 +6,6 @@ class JobAnalysis(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
+    job_id = Column(Integer, ForeignKey("jobs.id"))
     job_description = Column(Text)
     analysis = Column(JSON)

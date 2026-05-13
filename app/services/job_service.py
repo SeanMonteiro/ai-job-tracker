@@ -64,3 +64,15 @@ class JobService:
         return {
             "message": "Job Delete successfully"
         }
+
+    # FUNCTION TO UPDATE JOB
+    def enrich_job(self, job_id: int, title: str, company: str):
+        job = self.repo.get_job(job_id)
+
+        if title:
+            job.title = title
+            
+        if company:
+            job.company = company
+
+        return self.repo.update_job(job)
