@@ -3,9 +3,8 @@ from app.ai.prompts.job_analysis_prompt import JOB_ANALYSIS_PROMPT
 from app.ai.schemas.job_analysis import JobAnalysisResponse
 from app.ai.utils.json_parser import extract_json_from_text
 from app.exceptions import AppException
-import logging
-
-logger = logging.getLogger("ai-job-tracker")
+from app.core.logger.logger import logger, setup_logger
+logger = setup_logger()
 
 class JobAnalysisService:
 
@@ -24,16 +23,18 @@ class JobAnalysisService:
             # raise AppException("Simulated AI failure", 500)
 
             response = self.client.chat(messages)
-            logger.info(f"AI RESPONSE RAW : {str(response)}")
+            logger.info(f"AI RESPONSE RECEIVED")
 
             if not response:
+                logger.warning("NO AI RESPONSE RECEIVED")
                 raise AppException("Empty AI response", 500)
 
             # TRY SAFE PARSING
             data = extract_json_from_text(response)
             structured = JobAnalysisResponse(**data)
-            logger.info(f"AI PARSED OUTPUT RAW : {structured.model_dump()}")
+            # logger.info(f"AI PARSED OUTPUT RAW : {structured.model_dump()}")
             return structured.model_dump()
         
         except Exception as e:
+            logger.error(f"AI ANALYSIS FAILED: {str(e)}")
             raise AppException("AI job analysis failed", 500)

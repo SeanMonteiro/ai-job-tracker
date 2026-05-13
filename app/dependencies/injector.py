@@ -22,7 +22,7 @@ def get_user_service(db:Session = Depends(get_db)):
     repo = UserRepository(db)
     return UserService(repo)
 
-def get_job_analysis_service(db:Session = Depends(get_db)):
+def get_job_analysis_service():
     return JobAnalysisService()
 
 def get_job_pipeline_service(

@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends
 from app.schemas.job import JobCreate, JobUpdate
 from app.dependencies.injector import get_job_service, get_job_pipeline_service
 from app.dependencies.auth import get_current_user
 from app.services.job_service import JobService
 from app.services.job_pipeline_service import JobPipelineService
 from app.core.response import success_response
+from app.core.logger.logger import logger, setup_logger
+logger = setup_logger()
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 

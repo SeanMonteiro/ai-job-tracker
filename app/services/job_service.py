@@ -1,6 +1,8 @@
 # Business Logic
 from app.models.job import Job
 from app.exceptions import JobNotFoundException, JobValidationException
+from app.core.logger.logger import logger, setup_logger
+logger = setup_logger()
 
 class JobService: 
     def __init__(self, repo):
@@ -10,6 +12,7 @@ class JobService:
 
     def create_job(self, job_data, user_id: int):
         if not job_data.title or len(job_data.title.strip()) < 3:
+            logger.warning(f"JOB SERVICE: invalid job title | user_id={user_id} | title={job_data.title}")
             raise JobValidationException()
         
         job = Job(
@@ -18,7 +21,6 @@ class JobService:
             description = job_data.description,
             user_id = user_id
         )
-        
         return self.repo.create_job(job)
     
     # GET JOB BY ID THAT BELONG TO USER
@@ -27,6 +29,7 @@ class JobService:
         job = self.repo.get_job(job_id)
         
         if job is None or job.user_id!= user_id:
+            logger.warning(f"JOB SERVICE: unauthorized job access attempt | job_id={job_id} | user_id={user_id}")
             raise JobNotFoundException()  
         
         return job
@@ -42,6 +45,7 @@ class JobService:
         job = self.repo.get_job(job_id)
 
         if job is None or job.user_id != user_id:
+            logger.warning(f"JOB SERVICE: unauthorized job update attempt | job_id={job_id} | user_id={user_id}")
             raise JobNotFoundException()
         
         update_data = payload.model_dump(exclude_unset=True)
@@ -57,6 +61,7 @@ class JobService:
         job = self.repo.get_job(job_id)
 
         if job is None or job.user_id != user_id:
+            logger.warning(f"JOB SERVICE: unauthorized job delete attempt | job_id={job_id} | user_id={user_id}")
             raise JobNotFoundException()
         
         self.repo.delete_job(job)
@@ -64,15 +69,3 @@ class JobService:
         return {
             "message": "Job Delete successfully"
         }
-
-    # FUNCTION TO UPDATE JOB
-    def enrich_job(self, job_id: int, title: str, company: str):
-        job = self.repo.get_job(job_id)
-
-        if title:
-            job.title = title
-            
-        if company:
-            job.company = company
-
-        return self.repo.update_job(job)

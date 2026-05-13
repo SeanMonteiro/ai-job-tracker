@@ -1,8 +1,7 @@
-import logging
 from functools import wraps
 from sqlalchemy.exc import SQLAlchemyError
-
-logger = logging.getLogger("ai-job-tracker")
+from app.core.logger.logger import logger, setup_logger
+logger = setup_logger()
 
 def db_operation(action:str, entity:str):
     def decorator(func):

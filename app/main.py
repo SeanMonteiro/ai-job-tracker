@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.core.database.database import Base, engine
-from app.core.logger.logger import setup_logger
 import logging
 from app.core.logger.middleware import RequestIDMiddleware
 from app.handlers import (
@@ -15,8 +14,8 @@ from app.api.auth_routes import router as auth_router
 from app.api.job_routes import router as job_router
 from app.api.ai_routes import router as ai_router
 
-setup_logger()
-logger = logging.getLogger("ai-job-tracker")
+from app.core.logger.logger import logger, setup_logger
+logger = setup_logger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

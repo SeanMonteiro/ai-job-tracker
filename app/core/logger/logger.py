@@ -44,3 +44,5 @@ def setup_logger():
 
 def get_logger(name:str):
     return logging.getLogger(name)
+
+logger = setup_logger()

@@ -1,9 +1,6 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from app.exceptions import AppException
-import logging
-
-logger = logging.getLogger("ai-job-tracker")
 
 async def app_exception_handler(request: Request, exc: AppException):
 
