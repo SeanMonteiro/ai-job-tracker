@@ -1,5 +1,6 @@
 # ORM 
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy.orm import relationship
 from app.core.database.database import Base
 
 class Job(Base):
@@ -11,6 +12,8 @@ class Job(Base):
     description = Column(Text, nullable=True)
 
     user_id = Column(Integer, ForeignKey("users.id"))
+
+    analysis = relationship("JobAnalysis", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Job(id={self.id}, title={self.title})>"

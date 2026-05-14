@@ -23,10 +23,13 @@ def db_operation(action:str, entity:str):
                 logger.error(
                     f"{action} | entity={entity} | DB_ERROR | error={str(e)}"
                 )
+                raise
 
             except Exception as e:
                 logger.error(
                     f"{action} | entity={entity} | ERROR | error={str(e)}"
                 )
+                raise
+            
         return wrapper
     return decorator

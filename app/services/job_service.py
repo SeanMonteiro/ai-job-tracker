@@ -2,6 +2,7 @@
 from app.models.job import Job
 from app.exceptions import JobNotFoundException, JobValidationException
 from app.core.logger.logger import logger, setup_logger
+from app.exceptions import AppException
 logger = setup_logger()
 
 class JobService: 
@@ -64,7 +65,11 @@ class JobService:
             logger.warning(f"JOB SERVICE: unauthorized job delete attempt | job_id={job_id} | user_id={user_id}")
             raise JobNotFoundException()
         
-        self.repo.delete_job(job)
+        try:
+            self.repo.delete_job(job)
+        except Exception as e:
+            logger.error("JOB SERVICE: DELETE FAILED | job_id={job_id}", exc_info=True)
+            raise AppException("Job deletion failed due to database constraint", 500)
 
         return {
             "message": "Job Delete successfully"

@@ -30,5 +30,9 @@ class JobRepository:
     
     @db_operation("DELETE_JOB","JOB")
     def delete_job(self, job):
-        self.db.delete(job)
-        self.db.commit()
+        try: 
+            self.db.delete(job)
+            self.db.commit()
+        except Exception:
+            self.db.rollback()
+            raise

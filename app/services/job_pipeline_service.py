@@ -43,13 +43,11 @@ class JobPipelineService:
                 "analysis": saved_analysis
             }
         except Exception as e:
-            logger.error(f"PIPELINE FAILD | structured_flow | user_id={user_id} | error={str(e)}")
-            exc_info=True
-
+            logger.error(f"PIPELINE FAILD | structured_flow | user_id={user_id} | error={str(e)}", exc_info=True)
             return {
-                "job": None,
+                "job": job_response if 'job_response' in locals() else None,
                 "analysis": None,
-                "error": str(e)
+                "message": "AI analysis failed but job was created"
             }
     
     def create_raw_job_with_analysis(self, description: str, user_id: int):
@@ -93,13 +91,11 @@ class JobPipelineService:
                 "analysis": saved_analysis
             }
         except Exception as e:
-            logger.error(f"PIPELINE FAILED | raw_flow | user_id={user_id} | error={str(e)}")
-            exc_info=True
-
+            logger.error(f"PIPELINE FAILED | raw_flow | user_id={user_id} | error={str(e)}", exc_info=True)
             return {
-                "job": None,
+                "job": job_response if 'job_response' in locals() else None,
                 "analysis": None,
-                "error": str(e)
+                "message": "AI analysis failed but job was created"
             }
         
     def analyze_existing_job (self, job_id: int, user_id: int):
@@ -134,4 +130,9 @@ class JobPipelineService:
             }
 
         except Exception as e:
-            logger.error(f"PIPELINE FAILED | retry_analysis | job_id={job_id}")
+            logger.error(f"PIPELINE FAILED | retry_analysis | job_id={job_id}", exc_info=True)
+            return {
+                "job": job_response if 'job_response' in locals() else None,
+                "analysis": None,
+                "message": "AI analysis retry failed "
+            }

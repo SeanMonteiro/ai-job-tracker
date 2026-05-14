@@ -16,7 +16,7 @@ class LoginRequest(BaseModel):
 
 # REGISTER USER 
  
-@router.post("/register")
+@router.post("/register", status_code=201)
 def register_user(
     user: UserCreate,
     user_service: UserService = Depends(get_user_service)
@@ -40,12 +40,10 @@ def login(
 # Test JWT token
 @router.get("/me")
 def get_me(current_user = Depends(get_current_user)):
-    return {
-        "success": True,
-        "data": {
+    return success_response (
+        data = {
             "id" : current_user.id,
             "username" : current_user.username,
             "email": current_user.email
-        },
-        "message" : None
-    }
+        }
+    )

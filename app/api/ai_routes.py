@@ -6,7 +6,7 @@ from app.core.response import success_response
 
 router = APIRouter(prefix="/ai", tags=["AI"])
 
-@router.post("/jobs/raw")
+@router.post("/jobs/raw", status_code=201)
 def create_job(
     description: str = Body(..., media_type="text/plain"), 
     job_pipeline_service: JobPipelineService = Depends(get_job_pipeline_service),
@@ -15,7 +15,7 @@ def create_job(
     result = job_pipeline_service.create_raw_job_with_analysis(description, current_user.id)
     return success_response(data=result)
 
-@router.post("jobs/{job_id}/analyze")
+@router.post("/jobs/{job_id}/analyze")
 def analyze_existing_job(
     job_id: int,
     job_pipeline_service: JobPipelineService = Depends(get_job_pipeline_service),

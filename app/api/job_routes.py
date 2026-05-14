@@ -12,7 +12,7 @@ router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
 # CREATE JOB BY USER - STRUCTURED JSON DATA
 
-@router.post("/")
+@router.post("/", status_code=201)
 def create_job(
         job: JobCreate, 
         pipeline: JobPipelineService = Depends(get_job_pipeline_service),

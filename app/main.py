@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.core.database.database import Base, engine
-import logging
 from app.core.logger.middleware import RequestIDMiddleware
 from app.handlers import (
     app_exception_handler,
