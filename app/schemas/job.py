@@ -1,11 +1,11 @@
 # API Contract
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class JobCreate(BaseModel):
-    title: str
-    company: str
-    description: Optional[str] = None
+    title: str = Field(..., min_length=1, max_length=80)
+    company: str = Field(default="Unknown", max_length=100)
+    description: str = Field(..., min_length=10)
 
 
 class JobResponse(JobCreate):
