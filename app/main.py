@@ -12,6 +12,7 @@ from app.exceptions import AppException
 from app.api.auth_routes import router as auth_router
 from app.api.job_routes import router as job_router
 from app.api.ai_routes import router as ai_router
+from app.api.health_routes import router as health_router
 
 from app.core.logger.logger import logger, setup_logger
 logger = setup_logger()
@@ -36,12 +37,8 @@ app.add_exception_handler(Exception, global_exception_handler)
 app.include_router(job_router)
 app.include_router(auth_router)
 app.include_router(ai_router)
+app.include_router(health_router)
 
 @app.get("/")
 def root():
     return {"message": "AI Job Tracker API is running"}
-
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
