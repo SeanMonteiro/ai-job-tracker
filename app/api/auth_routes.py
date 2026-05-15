@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserResponse
 from app.services.user_service import UserService
 from app.dependencies.injector import get_user_service
 from app.core.response import success_response
@@ -23,7 +23,11 @@ def register_user(
 ):
     logger.info(f"AUTH ROUTE: registration attempt | email={user.email}")
     result = user_service.register_user(user)
-    return success_response(data=result)
+    return UserResponse(
+        username = result.username,
+        email = result.email,
+        message = "User created successfully"
+    )
 
 # LOGIN USER
 
