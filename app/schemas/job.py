@@ -15,6 +15,6 @@ class JobResponse(JobCreate):
         from_attributes = True
 
 class JobUpdate(BaseModel):
-    title: Optional[str] = None
-    company: Optional[str] = None
-    description: Optional[str] = None
+    title: Optional[str] = Field(None, min_length=1, max_length=80)
+    company: Optional[str] = Field(None, max_length=100)
+    description: Optional[str] = Field(None, min_length=10)
