@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from app.core.database.database import engine
 from sqlalchemy import text
 
-router = APIRouter(prefix="/health", tags=["Health"])
+router = APIRouter(prefix="/health", tags=["HEALTH"])
 
 @router.get("/")
 def health():

@@ -8,7 +8,7 @@ from app.core.response import success_response
 from app.core.logger.logger import logger, setup_logger
 logger = setup_logger()
 
-router = APIRouter(prefix="/jobs", tags=["Jobs"])
+router = APIRouter(prefix="/jobs", tags=["JOBS"])
 
 # CREATE JOB BY USER - STRUCTURED JSON DATA
 

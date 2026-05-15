@@ -13,6 +13,7 @@ from app.api.auth_routes import router as auth_router
 from app.api.job_routes import router as job_router
 from app.api.ai_routes import router as ai_router
 from app.api.health_routes import router as health_router
+from app.api.debug_routes import router as debug_router
 
 from app.core.logger.logger import logger, setup_logger
 logger = setup_logger()
@@ -38,6 +39,7 @@ app.include_router(job_router)
 app.include_router(auth_router)
 app.include_router(ai_router)
 app.include_router(health_router)
+app.include_router(debug_router)
 
 @app.get("/")
 def root():

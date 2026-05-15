@@ -4,6 +4,7 @@ from app.ai.schemas.job_analysis import JobAnalysisResponse
 from app.ai.utils.json_parser import extract_json_from_text
 from app.exceptions import AppException
 from app.core.logger.logger import logger, setup_logger
+import os
 logger = setup_logger()
 
 class JobAnalysisService:
@@ -20,7 +21,8 @@ class JobAnalysisService:
         
         try:
             # # Simulate AI failure
-            # raise AppException("Simulated AI failure", 500)
+            if os.getenv("SIMULATE_AI_FAILURE") == "true":
+                raise AppException("Simulated AI failure", 500)
 
             response = self.client.chat(messages)
             logger.info(f"AI RESPONSE RECEIVED")
