@@ -1,6 +1,6 @@
 from app.schemas.job import JobCreate, JobResponse
 from app.models.job_analysis import JobAnalysis
-from app.utils.raw_job_parser import parse_raw_job_text 
+from app.utils.utilities import parse_raw_job_text, validate_description
 from app.core.logger.logger import logger, setup_logger
 logger = setup_logger()
 
@@ -13,6 +13,7 @@ class JobPipelineService:
 
     def create_structure_job_with_analysis(self, job_data, user_id: int):
         logger.info("PIPELINE START: structured flow")
+        validate_description(job_data.description)
         try:
             logger.info(f"PIPELINE SERVICE: create job | title={job_data.title} | user_id={user_id}")
             job = self.job_service.create_job(job_data, user_id)
@@ -51,8 +52,8 @@ class JobPipelineService:
             }
     
     def create_raw_job_with_analysis(self, description: str, user_id: int):
-
         logger.info("PIPELINE START: raw flow")
+        validate_description(description)
         try:
             parsed = parse_raw_job_text(description)
             logger.info(f"PIPELINE SERVICE: create job | title={parsed.get('title')} | user_id={user_id}")

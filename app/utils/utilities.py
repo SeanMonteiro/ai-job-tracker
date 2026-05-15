@@ -1,5 +1,16 @@
+from app.exceptions import AppException
+
+#parse_raw_job_text
 MAX_TITLE_LENGHT = 80
 MAX_COMPANY_LENTH = 100
+
+# description length validator
+MAX_JOB_DESCRIPTION_TEXT_LENGTH = 5000
+
+def validate_description(text: str):
+    if(len(text)) > MAX_JOB_DESCRIPTION_TEXT_LENGTH:
+        raise AppException("Raw job description too long", 413)
+
 def parse_raw_job_text(text:str):
     if not text or not text.strip():
         raise ValueError("Empty job description")
