@@ -1,0 +1,1985 @@
+{
+  "info": {
+    "_postman_id": "61b29b8a-ce76-4b20-834d-0c93e13718f5",
+    "name": "AI Job Tracker",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14398231"
+  },
+  "item": [
+    {
+      "name": "1.Health Checks",
+      "item": [
+        {
+          "name": "Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DB Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health/db",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health",
+                "db"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Auth Flow (Create New/Default)",
+      "item": [
+        {
+          "name": "Register User U1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"sanity_user1\",\r\n  \"email\": \"sanity_user1@test.com\",\r\n  \"password\": \"sanity_user1\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register User U2",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"sanity_user2\",\r\n  \"email\": \"sanity_user2@test.com\",\r\n  \"password\": \"sanity_user2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User U1",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"token\", pm.response.json().data.access_token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"sanity_user1@test.com\",\r\n  \"password\": \"sanity_user1\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User U2",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"token2\", pm.response.json().data.access_token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"sanity_user2@test.com\",\r\n  \"password\": \"sanity_user2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Jobs",
+      "item": [
+        {
+          "name": "Analyze Updated Jobs",
+          "item": [
+            {
+              "name": "Analyze Job Structured U1",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/{{job_id}}/analyze",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "{{job_id}}",
+                    "analyze"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Analyze Job Structured U2",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token2}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/{{job2_id}}/analyze",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "{{job2_id}}",
+                    "analyze"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Create Job Structured U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"job_id\", pm.response.json().data.job.id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Backend Software Engineer\",\r\n  \"company\": \"NovaTech Solutions\",\r\n  \"description\": \"NovaTech Solutions is seeking a Backend Software Engineer to design and maintain scalable RESTful APIs using FastAPI and PostgreSQL. The role involves building secure microservices, optimizing database queries, integrating third-party APIs, and deploying services with Docker and AWS. Candidates should have strong Python development experience, familiarity with Redis caching, CI/CD pipelines, and distributed systems concepts. Experience with monitoring, logging, and cloud-native architectures is highly preferred.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Job Structured U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"job2_id\", pm.response.json().data.job.id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"AI Platform Engineer\",\r\n  \"company\": \"Vertex Analytics\",\r\n  \"description\": \"Vertex Analytics is hiring an AI Platform Engineer to support the development of AI-powered workflow automation tools. Responsibilities include integrating OpenAI APIs, building backend services with FastAPI, maintaining PostgreSQL databases, and implementing reliable error handling for asynchronous processing pipelines. Applicants should have experience with Python, Docker, cloud deployment practices, API security, and prompt engineering fundamentals. Familiarity with machine learning infrastructure and observability tooling is considered a strong advantage.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Jobs U1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jobs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Jobs U2",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jobs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job By JobId U1",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{job_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job By JobId U2",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job2_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{job2_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Job U1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Backend Software Engineer\",\r\n  \"company\": \"NovaTech Solutions\",\r\n  \"description\": \"NovaTech Solutions is seeking a Backend Software Engineer to design and maintain scalable RESTful APIs using FastAPI and PostgreSQL. The role involves building secure microservices, optimizing database queries, integrating Kafka-based event systems, and deploying containerized services with Docker, Kubernetes, and AWS. Candidates should have strong Python development experience, familiarity with Redis caching, CI/CD pipelines, distributed systems concepts, and performance optimization techniques. Experience mentoring junior developers and improving system observability is highly preferred.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{job_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Job U2",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"API Platform Engineer\",\r\n    \"company\": \"Vertex Analytics\",\r\n    \"description\": \"Vertex Analytics is hiring an AI Platform Engineer to support the development of AI-powered workflow automation tools. Responsibilities include integrating OpenAI APIs, building backend services with FastAPI, maintaining PostgreSQL databases, implementing vector database integrations, and developing evaluation pipelines for AI reliability testing. Applicants should have experience with Python, Docker, cloud deployment practices, API security, rate limiting, and prompt engineering fundamentals. Familiarity with monitoring systems, observability tooling, and scalable AI infrastructure is considered a strong advantage.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job2_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{job2_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job U1 (Optional)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{job_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job U2 (Optional)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job2_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{job2_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. AI Analysis",
+      "item": [
+        {
+          "name": "Create Job-Analysis Raw",
+          "item": [
+            {
+              "name": "Create Job Raw UI",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.environment.set(\"raw_job_id\", pm.response.json().data.job.id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "Senior Backend Engineer\r\nNovaTech Solutions\r\nWe are looking for a Senior Backend Engineer to join our engineering team and help design scalable backend systems for high-traffic applications. You will be responsible for building and maintaining RESTful APIs using FastAPI, designing efficient PostgreSQL schemas, and ensuring system reliability across distributed services. The role involves working closely with frontend engineers, product managers, and DevOps teams to deliver production-ready features. You should have strong experience in Python, microservices architecture, Docker-based deployments, and cloud platforms such as AWS or GCP. Familiarity with caching strategies, message queues, and observability tools is highly desirable.",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/raw",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "raw"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Raw Jobs U1",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/jobs/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Raw Job By JobId U1",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{raw_job_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{raw_job_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Raw Job U1",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n        \"company\": \"NovaTech Solutions\",\r\n        \"description\": \"We are looking for a Senior Backend Engineer to join our engineering team and help design scalable, AI-enabled backend systems for high-traffic applications. You will be responsible for building and maintaining RESTful APIs using FastAPI, designing efficient PostgreSQL schemas, and integrating AI services into production workflows. The role involves working with event-driven architectures using Kafka or RabbitMQ, implementing caching strategies with Redis, and deploying containerized services using Docker and Kubernetes on AWS. You should have strong experience in Python, distributed systems, system design, and observability tools like Prometheus or Grafana. Familiarity with LLM integrations, prompt engineering, and API security practices is highly desirable.\",\r\n        \"title\": \"Senior Backend Engineer\"\r\n    }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{raw_job_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{raw_job_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Analyze Job Raw U1",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/{{raw_job_id}}/analyze",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "{{raw_job_id}}",
+                    "analyze"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Raw Job U1 (Optional)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{raw_job_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{raw_job_id}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "AI Failure Simulation (AIFS) - Raw",
+          "item": [
+            {
+              "name": "Enable AIFS",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/debug/ai/failure/enable",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "debug",
+                    "ai",
+                    "failure",
+                    "enable"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Raw Job U1 (Analysis Absent)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.environment.set(\"fs_job_raw\", pm.response.json().data.job.id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "Full Stack Software Engineer\r\nCloudBridge Technologies\r\nCloudBridge Technologies is hiring a Full Stack Software Engineer to build and maintain scalable web applications used by enterprise clients. You will work on both backend services using FastAPI and frontend interfaces using React. Responsibilities include designing RESTful APIs, optimizing PostgreSQL queries, implementing authentication and authorization systems, and ensuring performance and security across the stack. You will also collaborate with product teams to deliver end-to-end features, integrate third-party APIs, and contribute to system design discussions. Experience with Docker, CI/CD pipelines, cloud platforms, and modern JavaScript frameworks is required. Familiarity with microservices and distributed systems is a strong advantage.",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/raw",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "raw"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Disable AIFS",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/debug/ai/failure/disable",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "debug",
+                    "ai",
+                    "failure",
+                    "disable"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Check AIFS Raw Job U1",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{fs_job_raw}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{fs_job_raw}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Analyze AIFS Raw Job U1",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/{{fs_job_raw}}/analyze",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "{{fs_job_raw}}",
+                    "analyze"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete AIFS Raw Job U1 (Optional)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{fs_job_raw}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{fs_job_raw}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "AI Failure Simulation (AIFS) - Structured",
+          "item": [
+            {
+              "name": "Enable AIFS",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/debug/ai/failure/enable",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "debug",
+                    "ai",
+                    "failure",
+                    "enable"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Sim Job U2 (Analysis Absent)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.environment.set(\"fs_job_struct\", pm.response.json().data.job.id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token2}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"title\": \"Machine Learning Platform Engineer\",\r\n    \"company\": \"Apex Intelligence Systems\",\r\n    \"description\": \"Apex Intelligence Systems is seeking a Machine Learning Platform Engineer to build infrastructure that supports scalable AI and ML workflows. You will design and maintain backend services that power model training, evaluation, and deployment pipelines. Responsibilities include integrating Python-based APIs, managing data pipelines, optimizing PostgreSQL and vector database performance, and deploying services using Docker and Kubernetes on cloud infrastructure. You will also work closely with data scientists to productionize machine learning models and ensure reliability, monitoring, and scalability of AI systems. Experience with distributed systems, MLOps tools, and API-driven architectures is highly desirable.\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/jobs/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    ""
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Disable AIFS",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/debug/ai/failure/disable",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "debug",
+                    "ai",
+                    "failure",
+                    "disable"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Check AIFS Structure Job U2",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token2}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{fs_job_struct}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{fs_job_struct}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Analyze Job Failed AI Sim",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token2}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/{{fs_job_struct}}/analyze",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "{{fs_job_struct}}",
+                    "analyze"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete AIFS Structure Job U2 (Optional)",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token2}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{fs_job_struct}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{fs_job_struct}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Analyze Job (Created/ Failed Sim / Re-Version",
+          "item": [
+            {
+              "name": "Analyze Job Any",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/54/analyze",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "54",
+                    "analyze"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Edge Case Scenarios",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Duplicate Username",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"sanity_user2\",\r\n  \"email\": \"sanity_user3@test.com\",\r\n  \"password\": \"sanity_user3\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Duplicate Email",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"sanity_user3\",\r\n  \"email\": \"sanity_user2@test.com\",\r\n  \"password\": \"sanity_user3\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Invalid Password",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"sanity_user1@test.com\",\r\n  \"password\": \"sanity_user\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Invalid Token",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "4567773249238423894788238427894327984872374",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Missing Token",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Job",
+          "item": [
+            {
+              "name": "Job Ownership Violation",
+              "item": [
+                {
+                  "name": "Get Job U1  by U2",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token2}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": ""
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/jobs/{{job_id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "jobs",
+                        "{{job_id}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Update Job U1 by U2",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token2}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"Frontend Python Developer\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/jobs/{{job_id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "jobs",
+                        "{{job_id}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete Job U1 by U2",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token2}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": ""
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/jobs/{{job_id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "jobs",
+                        "{{job_id}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Job Schema Violations",
+              "item": [
+                {
+                  "name": "Create Job",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token2}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"Principal Enterprise Distributed Cloud Infrastructure Reliability Engineering Architect\",\r\n  \"company\": \"International Advanced Artificial Intelligence Cybersecurity Financial Technology Solutions Consortium\",\r\n  \"description\": \"We are seeking an experienced engineering leader to design scalable backend systems, improve distributed infrastructure reliability, and lead cloud-native platform initiatives across multiple enterprise environments. Candidates should have strong experience with Python, FastAPI, PostgreSQL, Kubernetes, Docker, AWS, distributed systems architecture, observability tooling, CI/CD pipelines, and AI service integrations. Familiarity with event-driven systems, Redis caching, Kafka messaging, and production-grade security practices is highly desirable.\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/jobs/",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "jobs",
+                        ""
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Update Job U2",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token2}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"Principal Enterprise Distributed Cloud Infrastructure Reliability Engineering Architect\",\r\n  \"company\": \"International Advanced Artificial Intelligence Cybersecurity Financial Technology Solutions Consortium\",\r\n  \"description\": \"Vertex Analytics is hiring an AI Platform Engineer to support the development of AI-powered workflow automation tools. Responsibilities include integrating OpenAI APIs, building backend services with FastAPI, maintaining PostgreSQL databases, implementing vector database integrations, and developing evaluation pipelines for AI reliability testing. Applicants should have experience with Python, Docker, cloud deployment practices, API security, rate limiting, and prompt engineering fundamentals. Familiarity with monitoring systems, observability tooling, and scalable AI infrastructure is considered a strong advantage.\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/jobs/{{job2_id}}",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "jobs",
+                        "{{job2_id}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Create and Analyze Raw",
+          "item": [
+            {
+              "name": "Create Raw Job U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.environment.set(\"fs_job_raw\", pm.response.json().data.job.id);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "Principal Enterprise AI Platform Infrastructure Reliability Engineering Architect\r\nInternational Advanced Artificial Intelligence Cybersecurity Financial Technology Solutions Consortium\r\nWe are seeking a Senior Backend Engineer to join our engineering organization and help design, develop, maintain, and scale high-performance backend systems that support mission-critical enterprise workflows across distributed cloud environments. The successful candidate will work closely with software engineers, infrastructure teams, product managers, DevOps specialists, QA engineers, and AI platform teams to deliver reliable, secure, observable, and scalable services used by thousands of users across multiple regions and deployment environments.\r\n\r\nResponsibilities include building and maintaining RESTful APIs using FastAPI and Python, designing efficient relational database schemas using PostgreSQL, optimizing SQL queries for performance and scalability, implementing caching strategies with Redis, integrating asynchronous workflows using Kafka or RabbitMQ, deploying containerized workloads using Docker and Kubernetes, and managing infrastructure deployments on AWS cloud platforms. The engineer will also contribute to system design reviews, architectural discussions, CI/CD automation, production observability, monitoring strategies, incident response processes, and backend reliability initiatives.\r\n\r\nCandidates should have strong experience with backend software engineering principles, microservices architecture, distributed systems design, fault-tolerant systems, secure API development, token-based authentication systems, and scalable cloud-native infrastructure. Experience with OpenAI integrations, prompt engineering workflows, vector databases, retrieval augmented generation systems, AI-powered automation pipelines, and observability tooling such as Prometheus and Grafana is highly desirable.\r\n\r\nThe role requires collaboration across cross-functional engineering teams to deliver maintainable and extensible systems aligned with evolving business requirements. Engineers will participate in sprint planning, code reviews, technical design documentation, architecture reviews, mentoring sessions, and deployment planning activities. The ideal candidate demonstrates strong communication skills, ownership mentality, engineering discipline, problem-solving ability, debugging expertise, and comfort working in fast-moving product environments with ambiguous requirements.\r\n\r\nAdditional responsibilities include designing resilient retry workflows, implementing structured logging systems, improving error handling strategies, analyzing production incidents, participating in root cause analysis investigations, improving backend testability, contributing to deployment automation, optimizing infrastructure cost efficiency, and enhancing system reliability under production traffic loads.\r\n\r\nThe engineer will also contribute to internal developer tooling, API standardization efforts, schema validation improvements, observability instrumentation, AI evaluation workflows, deployment pipelines, operational dashboards, and internal platform reliability initiatives. Familiarity with software development lifecycle practices, agile engineering methodologies, Git-based collaboration workflows, and modern API development standards is expected.\r\n\r\nPreferred qualifications include experience with scalable SaaS systems, event-driven architecture patterns, distributed caching systems, production AI workflows, LLM application development, backend performance optimization, infrastructure automation, container orchestration systems, asynchronous processing pipelines, and enterprise security practices. Exposure to CI/CD tooling, infrastructure-as-code concepts, monitoring pipelines, incident management practices, and cloud networking fundamentals is considered an advantage.\r\n\r\nEngineers in this role will work closely with senior technical leadership to evolve the backend platform architecture and improve scalability, resiliency, maintainability, and operational excellence across multiple services and environments. The successful candidate should demonstrate the ability to independently manage technical projects, communicate architectural tradeoffs clearly, mentor junior developers, and contribute to engineering culture improvements across the organization.\r\n\r\nThis role requires strong attention to detail, ownership of production systems, and the ability to balance rapid feature delivery with long-term maintainability and platform reliability. Candidates should be comfortable working across application layers, debugging distributed systems issues, participating in operational support rotations, and continuously improving engineering processes and tooling. The organization values engineers who proactively identify system risks, propose scalable solutions, and contribute to a collaborative and growth-oriented engineering environment.\r\n\r\nWe are also seeking candidates who are comfortable integrating AI-powered tooling into development workflows and who understand the operational implications of deploying AI-enabled systems into production environments. Familiarity with AI governance considerations, prompt evaluation strategies, API reliability concerns, model fallback approaches, and observability requirements for AI workflows is considered highly valuable for this role.\r\n\r\nThe successful candidate will contribute directly to backend platform modernization initiatives, distributed workflow orchestration systems, cloud-native infrastructure evolution, AI integration services, internal platform APIs, authentication and authorization improvements, and long-term scalability planning efforts. Engineers who thrive in ownership-driven environments and enjoy building reliable systems at scale are encouraged to apply.\r\n\r\nWe are seeking a Senior Backend Engineer to join our engineering organization and help design, develop, maintain, and scale high-performance backend systems that support mission-critical enterprise workflows across distributed cloud environments. The successful candidate will work closely with software engineers, infrastructure teams, product managers, DevOps specialists, QA engineers, and AI platform teams to deliver reliable, secure, observable, and scalable services used by thousands of users across multiple regions and deployment environments.\r\n\r\nResponsibilities include building and maintaining RESTful APIs using FastAPI and Python, designing efficient relational database schemas using PostgreSQL, optimizing SQL queries for performance and scalability, implementing caching strategies with Redis, integrating asynchronous workflows using Kafka or RabbitMQ, deploying containerized workloads using Docker and Kubernetes, and managing infrastructure deployments on AWS cloud platforms. The engineer will also contribute to system design reviews, architectural discussions, CI/CD automation, production observability, monitoring strategies, incident response processes, and backend reliability initiatives.",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/raw",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "raw"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Clean Up (Optional)",
+      "item": [
+        {
+          "name": "Delete Job U1 Structured",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{job_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job U2 Structured",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{job2_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{job2_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Raw Job U1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/{{raw_job_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{raw_job_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job U1 (Sim-Raw)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jobs/{{fs_job_raw}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{fs_job_raw}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job U2 (Sim-Structured)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jobs/{{fs_job_struct}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "jobs",
+                "{{fs_job_struct}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
