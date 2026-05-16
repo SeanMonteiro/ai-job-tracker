@@ -6,9 +6,11 @@ __pycache__/
 
 # Virtual env
 venv/
+.venv/
 
 # Env files
 .env
+.env.*
 
 # VS Code
 .vscode/
@@ -18,6 +20,7 @@ venv/
 
 # Logger
 logs/
+*.log
 
 # Postgres Scripts
 postgresql/
@@ -26,4 +29,4 @@ postgresql/
 migrations/__pycache__
 
 # Temporay Test Files
-temp_test/*
+temp_test/
