@@ -1,6 +1,16 @@
 # API Contract
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Literal
+
+JobStatus = Literal [
+    "Saved",
+    "Applied",
+    "Interview_Received",
+    "Interviewing",
+    "Rejected",
+    "Offer_Received",
+    "Closed"
+]
 
 class JobCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=80)
@@ -10,6 +20,7 @@ class JobCreate(BaseModel):
 
 class JobResponse(JobCreate):
     id: int
+    status: str = "Saved"
 
     class Config:
         from_attributes = True
@@ -18,3 +29,6 @@ class JobUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=80)
     company: Optional[str] = Field(None, max_length=100)
     description: Optional[str] = Field(None, min_length=10)
+
+class JobStatusUpdate(BaseModel):
+    status: JobStatus

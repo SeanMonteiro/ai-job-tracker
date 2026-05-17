@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.schemas.job import JobCreate, JobUpdate
+from app.schemas.job import JobCreate, JobUpdate, JobStatusUpdate
 from app.dependencies.injector import get_job_service, get_job_pipeline_service
 from app.dependencies.auth import get_current_user
 from app.services.job_service import JobService
@@ -70,5 +70,21 @@ def delete_job(
 ):
     result = job_service.delete_job(
         job_id, current_user.id
+    )
+    return success_response(data=result)
+
+# UPDATE JOB STATUS FOR USER
+
+@router.patch("/{job_id}/status")
+def update_job_satus(
+    job_id: int, 
+    payload: JobStatusUpdate,
+    job_service: JobService = Depends(get_job_service),
+    current_user = Depends(get_current_user)
+):
+    result = job_service.update_job_status(
+        job_id = job_id,
+        user_id= current_user.id,
+        status= payload.status
     )
     return success_response(data=result)

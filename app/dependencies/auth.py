@@ -34,7 +34,7 @@ def get_current_user(
     user = user_service.get_user_by_id(user_id)
 
     if user is None:
-        logger.warning("AUTH FAILED: user not found | user_id={user_id}")
+        logger.warning(f"AUTH FAILED: user not found | user_id={user_id}")
         raise AppException("User not found", 404)
     
     return user

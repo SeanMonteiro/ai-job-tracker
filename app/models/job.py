@@ -10,10 +10,14 @@ class Job(Base):
     title = Column(String(255), nullable=False)
     company = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
+    status = Column(String(50), nullable=False, default="Saved", server_default="Saved")
 
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    analysis = relationship("JobAnalysis", cascade="all, delete-orphan")
+    analysis = relationship(
+        "JobAnalysis",
+        back_populates = "job", 
+        cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"<Job(id={self.id}, title={self.title})>"
+        return f"<Job(id={self.id}, title={self.title}, status={self.status})>"

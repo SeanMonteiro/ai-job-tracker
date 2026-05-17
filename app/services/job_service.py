@@ -5,6 +5,16 @@ from app.core.logger.logger import logger, setup_logger
 from app.exceptions import AppException
 logger = setup_logger()
 
+ALLOWED_JOB_STATUSES = {
+    "Saved",
+    "Applied",
+    "Interview_Received",
+    "Interviewing",
+    "Rejected",
+    "Offer_Received",
+    "Closed"
+}
+
 class JobService: 
     def __init__(self, repo):
         self.repo = repo
@@ -30,7 +40,8 @@ class JobService:
         job = self.repo.get_job(job_id)
         
         if job is None or job.user_id!= user_id:
-            logger.warning(f"JOB SERVICE: unauthorized job access attempt | job_id={job_id} | user_id={user_id}")
+            logger.warning(f"JOB SERVICE: unauthorized job access attempt | "
+                           f"job_id={job_id} | user_id={user_id}")
             raise JobNotFoundException()  
         
         return job
@@ -46,7 +57,8 @@ class JobService:
         job = self.repo.get_job(job_id)
 
         if job is None or job.user_id != user_id:
-            logger.warning(f"JOB SERVICE: unauthorized job update attempt | job_id={job_id} | user_id={user_id}")
+            logger.warning(f"JOB SERVICE: unauthorized job update attempt | "
+                           f"job_id={job_id} | user_id={user_id}")
             raise JobNotFoundException()
         
         update_data = payload.model_dump(exclude_unset=True)
@@ -62,15 +74,34 @@ class JobService:
         job = self.repo.get_job(job_id)
 
         if job is None or job.user_id != user_id:
-            logger.warning(f"JOB SERVICE: unauthorized job delete attempt | job_id={job_id} | user_id={user_id}")
+            logger.warning(f"JOB SERVICE: unauthorized job delete attempt | "
+                           f"job_id={job_id} | user_id={user_id}")
             raise JobNotFoundException()
         
         try:
             self.repo.delete_job(job)
         except Exception as e:
-            logger.error("JOB SERVICE: DELETE FAILED | job_id={job_id}", exc_info=True)
+            logger.error(f"JOB SERVICE: DELETE FAILED | job_id={job_id}", exc_info=True)
             raise AppException("Job deletion failed due to database constraint", 500)
 
         return {
             "message": "Job Delete successfully"
         }
+    
+    # UPDATE JOB STATUS
+
+    def update_job_status(self, job_id: int, user_id: int, status: str):
+        job = self.repo.get_job(job_id)
+        
+        if job is None or job.user_id != user_id:
+            logger.warning(f"JOB SERVICE: unauthorized job delete attempt | job_id={job_id} | user_id={user_id}")
+            raise JobNotFoundException()
+        
+        if status not in ALLOWED_JOB_STATUSES:
+            logger.warning(
+                f"JOB SERVICE: invalid status update | "
+                f"job_id={job_id} | user_id={user_id} | status={status}")
+            raise AppException("Invalid Job Status", 400)
+        
+        job.status = status
+        return self.repo.update_job(job)
