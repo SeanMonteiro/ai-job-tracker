@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from pydantic import BaseModel
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import UserCreate, UserResponse, ResumeUpdateRequest, ResumeResponse
 from app.services.user_service import UserService
 from app.dependencies.injector import get_user_service
 from app.core.response import success_response
@@ -51,3 +51,34 @@ def get_me(current_user = Depends(get_current_user)):
             "email": current_user.email
         }
     )
+
+@router.put("/resume")
+def update_my_resume(
+    payload: str = Body(..., media_type="text/plain"),
+    user_service: UserService = Depends(get_user_service),
+    current_user = Depends(get_current_user)
+):
+    result = user_service.update_resume(
+        user_id= current_user.id,
+        resume_text= payload
+    )
+
+    resume_result = ResumeResponse(
+        resume_length = len(result.resume_text or "")
+    )
+
+    return success_response(
+        data = resume_result, 
+        message = "Resume updated succesfully"
+        )
+
+@router.get("/resume")
+def get_my_resume(
+    current_user = Depends(get_current_user)
+):
+    resume_response = ResumeResponse (
+        resume_text = current_user.resume_text,
+        resume_length = len(current_user.resume_text or "")
+    )
+    
+    return success_response(data = resume_response)

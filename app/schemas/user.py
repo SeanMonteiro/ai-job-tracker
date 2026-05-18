@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 
 class UserCreate(BaseModel):
     username: str
@@ -12,4 +13,11 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ResumeUpdateRequest(BaseModel):
+    resume_text: str = Field(..., min_length=50)
+
+class ResumeResponse(BaseModel):
+    resume_text: Optional[str] = None
+    resume_length: int
 

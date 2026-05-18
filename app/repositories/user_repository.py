@@ -24,3 +24,9 @@ class UserRepository:
     @db_operation("GET_USER_BY_ID","USER")
     def get_by_id(self, user_id:int):
         return self.db.query(User).filter(User.id == user_id).first()
+    
+    @db_operation("UPDATE USER", "USER")
+    def update_user(self, user: User):
+        self.db.commit()
+        self.db.refresh(user)
+        return user

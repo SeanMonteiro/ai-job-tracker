@@ -62,3 +62,24 @@ class UserService:
     # GET USER BY USER_ID
     def get_user_by_id(self, user_id: int):
         return self.repo.get_by_id(user_id)
+    
+    # UPDATE RESUME FOR USER
+    def update_resume(self, user_id: int, resume_text: str):
+        user = self.repo.get_by_id(user_id)
+
+        if not user:
+            logger.warning(f"USER SERVICE: resume update failed user not found | user_id={user_id}")
+            raise AppException("User not found", 404)
+        
+        user.resume_text = resume_text
+        return self.repo.update_user(user)
+    
+    # GET RESUME FOR USER
+    def get_resume(self, user_id: int):
+        user = self.repo.get_by_id(user_id)
+
+        if not user:
+            logger.warning(f"USER SERVICE: get resume failed user not found | user_id={user_id}")
+            raise AppException("User not found", 404)
+        
+        return user.resume_text
