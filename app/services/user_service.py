@@ -71,6 +71,12 @@ class UserService:
             logger.warning(f"USER SERVICE: resume update failed user not found | user_id={user_id}")
             raise AppException("User not found", 404)
         
+        if not resume_text or len(resume_text.strip()) < 50:
+            logger.warning(
+                f"USER SERVICE: resume missing or too short | user_id={user_id}"
+            )
+            raise AppException("Please update your resume before running resume match", 400)
+        
         user.resume_text = resume_text
         return self.repo.update_user(user)
     

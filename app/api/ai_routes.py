@@ -23,3 +23,16 @@ def analyze_existing_job(
 ):
     result = job_pipeline_service.analyze_existing_job(job_id, current_user.id)
     return success_response(data=result)
+
+@router.post("jobs/{jobs_id}/resume_match")
+def match_resume_to_job(
+    job_id: int, 
+    job_pipeline_service: JobPipelineService = Depends(get_job_pipeline_service),
+    current_user = Depends(get_current_user)
+):
+    result = job_pipeline_service.match_resume_to_existing_job(
+        job_id = job_id,
+        user_id= current_user.id,
+        resume_text= current_user.resume_text
+    )
+    return success_response(data=result)

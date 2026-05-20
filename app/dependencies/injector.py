@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.repositories.job_repository import JobRepository
 from app.repositories.user_repository import UserRepository
 from app.repositories.job_analysis_repository import JobAnalysisRepository
+from app.repositories.resume_match_repository import ResumeMatchRepository
 
 # Import Services
 from app.services.job_service import JobService
@@ -31,5 +32,6 @@ def get_job_pipeline_service(
         job_analysis_service: JobAnalysisService = Depends(get_job_analysis_service)
 ):
     analysis_repo = JobAnalysisRepository(db)
-    return JobPipelineService(job_service, job_analysis_service, analysis_repo)
+    resume_match_repo = ResumeMatchRepository(db)
+    return JobPipelineService(job_service, job_analysis_service, analysis_repo,resume_match_repo)
 

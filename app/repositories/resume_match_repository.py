@@ -25,7 +25,7 @@ class ResumeMatchRepository:
     @db_operation("GET_NEXT_RESUME_MATCH_VERSION", "RESUME_MATCH")
     def get_next_version(self, job_id: int):
         latest = (
-            self.db.quer(ResumeMatchAnalysis)
+            self.db.query(ResumeMatchAnalysis)
             .filter(ResumeMatchAnalysis.job_id == job_id)
             .order_by(ResumeMatchAnalysis.version.desc())
             .first()
