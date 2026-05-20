@@ -1,7 +1,7 @@
 {
   "info": {
-    "_postman_id": "61b29b8a-ce76-4b20-834d-0c93e13718f5",
-    "name": "AI Job Tracker",
+    "_postman_id": "ea163514-19fa-4098-acb0-99bf3b99377b",
+    "name": "AI Job Tracker (Local)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "14398231"
   },
@@ -11,6 +11,21 @@
       "item": [
         {
           "name": "Service Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Service health returns 200\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -28,6 +43,21 @@
         },
         {
           "name": "DB Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"DB Health returns 200\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -43,6 +73,39 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Swagger Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Swagger docs are available\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Swagger UI\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/docs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "docs"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -51,6 +114,38 @@
       "item": [
         {
           "name": "Register User U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Register returns created or duplicate validation\", function(){\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 400]);\r",
+                  "});\r",
+                  "\r",
+                  "if(pm.response.code === 201){\r",
+                  "    pm.test(\"User registered successfully\", function(){\r",
+                  "        pm.expect(json.username).to.exist;\r",
+                  "        pm.expect(json.email).to.exist;\r",
+                  "        pm.expect(json.message).to.include(\"User created\");\r",
+                  "\r",
+                  "    });\r",
+                  "}\r",
+                  "\r",
+                  "if(pm.response.code === 400){\r",
+                  "    pm.test(\"Duplicate user handlded\", function(){\r",
+                  "        pm.expect(json.success === false || json.message).to.be.ok;\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -78,6 +173,37 @@
         },
         {
           "name": "Register User U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Register returns created or duplicate validation\", function(){\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 400]);\r",
+                  "});\r",
+                  "\r",
+                  "if(pm.response.code === 201){\r",
+                  "    pm.test(\"User2 registered successfully\", function(){\r",
+                  "        pm.expect(json.username).to.exist;\r",
+                  "        pm.expect(json.email).to.exist;\r",
+                  "        pm.expect(json.message).to.include(\"User created\");\r",
+                  "    });\r",
+                  "}\r",
+                  "\r",
+                  "if(pm.response.code === 400){\r",
+                  "    pm.test(\"Duplicate user2 handled\", function(){\r",
+                  "        pm.expect(json.success === false || json.message).to.be.ok;\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -121,6 +247,15 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Login U1 succesful\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.access_token).to.be.a(\"string\");\r",
+                  "    pm.expect(json.data.token_type).to.eql(\"bearer\");\r",
+                  "});\r",
+                  "\r",
                   "pm.environment.set(\"token\", pm.response.json().data.access_token);"
                 ],
                 "type": "text/javascript",
@@ -134,7 +269,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"email\": \"sanity_user1@test.com\",\r\n  \"password\": \"sanity_user1\"\r\n}",
+              "raw": "{\r\n  \"email\": \"sean2@test.com\",\r\n  \"password\": \"sean2@123\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -172,6 +307,15 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Login U2 succesful\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.access_token).to.be.a(\"string\");\r",
+                  "    pm.expect(json.data.token_type).to.eql(\"bearer\");\r",
+                  "});\r",
+                  "\r",
                   "pm.environment.set(\"token2\", pm.response.json().data.access_token);"
                 ],
                 "type": "text/javascript",
@@ -185,7 +329,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"email\": \"sanity_user2@test.com\",\r\n  \"password\": \"sanity_user2\"\r\n}",
+              "raw": "{\r\n  \"email\": \"sean3@test.com\",\r\n  \"password\": \"sean3@123\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -212,7 +356,15 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  ""
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Get U1 user successful\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.id).to.exist;\r",
+                  "    pm.expect(json.data.email).to.exist;\r",
+                  "    pm.expect(json.data.username).to.exist;\r",
+                  "});"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -260,7 +412,15 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  ""
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Get U2 user successful\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.id).to.exist;\r",
+                  "    pm.expect(json.data.email).to.exist;\r",
+                  "    pm.expect(json.data.username).to.exist;\r",
+                  "});"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -300,6 +460,230 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Update Resume U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Resume updated U1\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.resume_length).to.be.above(50);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "Backend Engineer with 8 years of experience designing, building, testing, and supporting production backend services, distributed systems, cloud-integrated APIs, and data-driven applications. Experienced in Java, Spring Boot, Python, FastAPI, PostgreSQL, REST APIs, microservices, asynchronous processing, event-driven architecture, system integration, observability, logging, authentication, authorization, and production troubleshooting. Strong background in building backend systems that support high-volume business workflows, internal platforms, data processing jobs, and API integrations across multiple services.\r\n\r\nProfessional experience includes designing backend services using Java, Spring Boot, Python, PostgreSQL, SQLAlchemy, REST APIs, and cloud services. Skilled in creating clean service-layer architecture, repository patterns, domain-specific business logic, request validation, centralized exception handling, structured logging, and database migration workflows. Experienced with API development using REST principles, JSON contracts, OpenAPI/Swagger documentation, Postman testing, and environment-based configuration. Comfortable working across backend application code, database schemas, integration layers, deployment troubleshooting, and production support.\r\n\r\nBuilt and maintained Java Spring Boot services for enterprise backend systems involving customer records, workflow automation, reporting, and system-to-system integrations. Designed REST API endpoints with clear request and response models, validation rules, authentication checks, ownership enforcement, and consistent error handling. Implemented service classes, repository layers, DTOs, entity mappings, database queries, and transaction handling. Used PostgreSQL and relational database design principles to model core domain entities, relationships, indexes, foreign keys, and audit fields. Wrote SQL queries for debugging, operational reporting, data validation, and production incident analysis.\r\n\r\nWorked on distributed backend systems where services communicated through REST APIs, message queues, scheduled jobs, asynchronous workers, and cloud-triggered workflows. Designed backend logic to handle retries, partial failures, idempotent processing, duplicate message protection, and safe database updates. Built services that separated synchronous user-facing API flows from asynchronous background processing so that long-running or failure-prone work could be retried independently. Participated in design discussions around service boundaries, data ownership, failure handling, error propagation, and integration contracts between backend systems.\r\n\r\nDeveloped Python backend services and automation utilities for data ingestion, operational tooling, API integration, and internal workflow automation. Used Python to parse JSON payloads, process files, validate input data, transform structured records, interact with PostgreSQL, and call external APIs. Built FastAPI services with dependency injection, Pydantic schemas, SQLAlchemy models, Alembic migrations, JWT authentication, password hashing, structured response formats, request ID middleware, centralized exception handling, and layered architecture. Created backend APIs that followed a service and repository pattern, making the code easier to test, extend, and reason about.\r\n\r\nExperienced with AWS cloud development, especially AWS Lambda, API Gateway, S3, IAM basics, environment variables, serverless deployment troubleshooting, and cloud-based backend integrations. Built Lambda functions to process API requests, transform data, read and write files from S3, interact with external services, and support automation workflows. Used API Gateway to expose HTTP endpoints and integrate with backend compute. Worked with cloud logs and runtime errors to debug deployment, permissions, configuration, and integration issues. Familiar with using environment-specific configuration for local, staging, and deployed environments.\r\n\r\nBuilt backend features involving authentication and authorization, including JWT-based login flows, password hashing, authenticated routes, current-user resolution, and ownership enforcement. Designed endpoints so users could only access and modify their own resources. Implemented service-layer checks to prevent unauthorized reads, updates, and deletes. Created standardized error responses for invalid credentials, expired tokens, missing records, validation failures, and unauthorized access attempts. Used structured logging to capture useful debugging context such as user ID, job ID, request ID, operation names, and failure causes.\r\n\r\nDesigned and implemented production-style API features including job creation, job update, job deletion, raw text processing, AI-powered analysis workflows, retryable background-style operations, versioned analysis records, and database persistence. Built services that accept structured JSON input as well as raw text input, validate the payload, convert it into domain objects, persist records in PostgreSQL, and trigger downstream analysis. Added versioning to analysis results so repeated analysis runs are stored as separate records instead of overwriting prior outputs. This allowed historical comparison, safer retry behavior, and clearer auditability.\r\n\r\nExperience with distributed systems includes designing backend services that tolerate external API failures, network timeouts, malformed payloads, inconsistent upstream responses, and partial completion scenarios. Implemented retry-friendly service flows and failure-safe responses where appropriate. Designed systems where a primary business record could still be created even if a downstream AI or enrichment step failed. Used logging and exception handling to distinguish between validation errors, authorization errors, database errors, and external service failures. Comfortable reasoning about operational concerns such as request tracing, transaction boundaries, stale data, race conditions, and safe retries.\r\n\r\nWorked with PostgreSQL for schema design, query development, migrations, indexing, constraints, foreign keys, JSON columns, and debugging. Used Alembic migrations to evolve database schemas in a controlled way. Added columns, created tables, configured foreign key cascade behavior, repaired local migration issues, and verified table structure through SQL queries. Experienced with SQL joins, filtering, ordering, aggregation, data cleanup, and diagnosing constraint violations. Used database inspection tools and command-line SQL clients to troubleshoot schema mismatches, permissions issues, sequence generation problems, and migration state.\r\n\r\nImplemented logging and observability improvements across backend services. Added structured logs for route entry, service operations, repository operations, database writes, AI calls, authentication failures, and exception handling. Used request IDs to correlate logs across a single API call. Added database operation decorators to log start, success, and failure events for repository methods. Used logs to identify whether failures occurred during authentication, ownership checks, AI response parsing, version calculation, database insertion, or response serialization. Comfortable using log output to drive debugging instead of guessing.\r\n\r\nExperienced with OpenAI API integration and AI-enabled backend workflows. Built service methods that send structured prompts, receive AI responses, parse JSON output, validate responses with Pydantic schemas, handle malformed or incomplete AI output, and persist structured AI analysis results. Designed prompts for job description analysis and resume-to-job matching. Implemented guardrails around response parsing, required fields, default values, validation ranges, and failure handling. Used AI integration as a backend capability rather than as an isolated script, including persistence, versioning, logging, exception handling, and API exposure.\r\n\r\nBuilt a portfolio backend system called AI Job Tracker using FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT authentication, password hashing, dependency injection, layered architecture, service and repository patterns, structured logging, request ID middleware, centralized exception handling, ownership enforcement, OpenAI integration, job CRUD, raw job description parsing, AI job analysis, retry AI analysis, versioned AI analysis records, resume storage, resume-to-job match scoring, job status tracking, and Postman API testing. Deployed the API on Render and tested workflows using Swagger, Postman, and local PostgreSQL tools.\r\n\r\nDesigned resume matching functionality where a user can store raw resume text, create job records, and run AI-powered resume matching against selected jobs. The system compares the saved resume with a job description and returns a match score, matching skills, missing skills, resume strengths, improvement suggestions, and a focus summary. The result is stored in PostgreSQL as a versioned record so the user can run the match multiple times after improving the resume. This feature demonstrates practical backend orchestration involving user data, job ownership validation, AI service calls, database persistence, and structured API responses.\r\n\r\nWorked with Git and Bitbucket for source control, branching, commits, merges, branch cleanup, and remote tracking. Used feature branches to isolate backend changes such as job status tracking, resume storage, AI prompt and schema updates, endpoint wiring, and documentation. Comfortable with Git commands for checking branch status, renaming branches, pushing local branches to remote, deleting stale branches, managing stash entries, tagging stable releases, and keeping deployment-safe references. Familiar with Jira for task tracking, sprint planning, bug reports, acceptance criteria, and development workflow coordination.\r\n\r\nCollaborated with cross-functional teams including backend developers, data engineers, QA analysts, product owners, business analysts, support teams, and cloud/platform teams. Participated in requirement clarification, technical design discussions, code reviews, bug triage, production support, and release preparation. Able to explain backend behavior clearly to both technical and non-technical stakeholders. Strong debugging mindset with the ability to trace issues through API input, service logic, repository methods, SQL queries, external integrations, and deployment configuration.\r\n\r\nTechnical skills include Java, Spring Boot, Python, FastAPI, SQLAlchemy, PostgreSQL, Alembic, REST APIs, JSON, OpenAPI, Swagger, Postman, JWT, password hashing, dependency injection, service-layer architecture, repository pattern, microservices, distributed systems, event-driven architecture, asynchronous processing, retry handling, idempotency concepts, structured logging, request tracing, centralized exception handling, AWS Lambda, API Gateway, S3, IAM basics, environment configuration, Linux, WSL, Git, Bitbucket, Jira, Agile development, SQL debugging, and production troubleshooting.\r\n\r\nStrengths include backend API design, clean service architecture, practical distributed systems thinking, cloud integration, database-backed application development, operational debugging, and AI-enabled backend feature development. Comfortable taking a feature from requirements through schema design, service implementation, API exposure, database migration, Postman validation, logging, error handling, deployment troubleshooting, and documentation. Interested in backend engineering, cloud backend engineering, platform engineering, AI systems engineering, and roles involving distributed backend services, API platforms, event-driven systems, and production-grade application development.",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/resume",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "resume"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Resume U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Resume updated U2\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.resume_length).to.be.above(50);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "Data Engineer with 7 years of experience building data pipelines, backend data services, cloud-based ingestion workflows, SQL-driven transformations, automation scripts, and production data processing systems. Experienced with Python, SQL, PostgreSQL, data ingestion, batch processing, ETL workflows, cloud storage, AWS Lambda, API Gateway, S3, Databricks, Apache Spark fundamentals, backend APIs, structured logging, data validation, and production troubleshooting. Strong background working across data engineering, backend development, cloud integrations, and operational support for data-driven applications.\r\n\r\nProfessional experience includes designing and maintaining data pipelines that ingest, validate, transform, and persist structured data from files, APIs, databases, and cloud storage. Skilled in Python scripting for data extraction, JSON parsing, file processing, schema validation, transformation logic, error handling, and automation. Experienced writing SQL queries for data analysis, debugging, reconciliation, reporting, and pipeline validation. Comfortable working with relational databases, cloud-based object storage, batch jobs, scheduled workflows, and backend services that expose data through APIs.\r\n\r\nBuilt Python-based data ingestion utilities to process raw files, validate incoming records, transform data into normalized structures, and load results into PostgreSQL tables. Implemented error handling for malformed files, missing required fields, duplicate records, invalid data types, empty payloads, failed transformations, and database insert issues. Added logging to track file names, record counts, failed rows, transformation steps, and processing outcomes. Designed workflows to move processed files to archive locations and isolate failed files for investigation. Used Python scripts to reduce manual data cleanup and improve repeatability of operational data processes.\r\n\r\nExperienced with PostgreSQL for relational data modeling, table design, indexes, constraints, foreign keys, JSON columns, query optimization basics, data validation, and operational debugging. Created database schemas to support backend applications and data processing workflows. Used SQL to compare source and target records, identify missing values, validate transformation accuracy, investigate production issues, and support business reporting needs. Familiar with database migrations using Alembic, including adding columns, creating tables, managing schema versions, verifying migration state, and resolving local development migration issues.\r\n\r\nWorked with cloud-based data workflows using AWS S3, AWS Lambda, API Gateway, IAM basics, environment variables, cloud logs, and serverless deployment patterns. Built Lambda functions to process files, trigger data transformations, call APIs, parse payloads, and move data between services. Used S3 for object storage, file ingestion, raw data retention, intermediate data storage, and archive workflows. Used API Gateway to expose simple API-based data ingestion or automation endpoints. Debugged cloud deployment issues involving permissions, environment configuration, missing dependencies, runtime errors, and failed integrations.\r\n\r\nFamiliar with Databricks and Apache Spark fundamentals for distributed data processing, notebook-based development, batch transformations, data lake workflows, and large-scale data processing concepts. Worked with Spark-style data transformation patterns including reading structured data, filtering records, selecting columns, applying transformations, joining datasets, and writing results to target storage. Understands the importance of partitioning, data volume, schema evolution, data quality checks, and pipeline observability in cloud data environments. Comfortable discussing how Python, SQL, Spark, S3, and relational databases fit together in a data engineering workflow.\r\n\r\nBuilt backend services that support data engineering use cases, including APIs for creating, retrieving, updating, and processing data records. Used Java Spring Boot and Python FastAPI to build RESTful APIs backed by PostgreSQL. Implemented service-layer logic, repository patterns, request validation, authentication, authorization checks, structured responses, and centralized exception handling. Worked on backend systems where API data was later consumed by reporting tools, downstream services, internal dashboards, or data processing jobs. Comfortable bridging backend engineering and data engineering responsibilities.\r\n\r\nDeveloped production-style APIs using FastAPI, SQLAlchemy, Alembic, PostgreSQL, Pydantic schemas, JWT authentication, password hashing, dependency injection, structured logging, request ID middleware, and layered architecture. Implemented endpoints that accept structured JSON and raw text payloads, validate input, persist data, trigger analysis workflows, and return consistent responses. Used PostgreSQL to store application records and analysis outputs, including JSON results from AI processing. Designed repository classes for database access and service classes for business rules, keeping route handlers thin and maintainable.\r\n\r\nWorked on data quality and validation concerns across pipelines and backend systems. Added checks for required fields, valid formats, minimum content lengths, duplicate entries, missing foreign keys, invalid enum values, and inconsistent source data. Implemented validation at multiple levels including API schemas, service logic, transformation scripts, and database constraints. Used logging to capture validation failures and make operational debugging easier. Designed processes where bad records could be isolated without stopping an entire pipeline when appropriate.\r\n\r\nExperience with pipeline reliability includes handling partial failures, retries, malformed input, empty files, API timeouts, inconsistent upstream responses, database constraint violations, and downstream processing failures. Built workflows that log clear failure reasons, avoid silent data loss, and support reruns after fixing input issues. Familiar with idempotency concepts, safe retry behavior, versioned outputs, archive folders, failed-record tracking, and separating raw input from processed output. Understands the importance of making data pipelines observable, repeatable, and easy to troubleshoot.\r\n\r\nBuilt cloud and backend automation using Python scripts that interact with APIs, databases, files, environment variables, and cloud services. Automated repetitive tasks such as data extraction, file movement, record validation, status updates, report preparation, and API testing support. Used Postman and Swagger for API validation, SQL clients for database inspection, logs for runtime debugging, and Git for source control. Comfortable working in Linux and WSL environments for development, command-line debugging, package management, and local service execution.\r\n\r\nBuilt an AI-enabled backend portfolio project called AI Job Tracker, combining backend engineering, data persistence, AI integration, and workflow automation. The system uses FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT authentication, password hashing, dependency injection, service and repository patterns, structured logging, request ID middleware, centralized exception handling, ownership enforcement, OpenAI integration, job CRUD, raw job description parsing, AI job analysis, retryable AI analysis, versioned analysis records, resume storage, resume-to-job match scoring, job status tracking, and deployed API testing. This project demonstrates ability to build a production-style backend API that persists structured AI outputs and supports real user workflows.\r\n\r\nDesigned resume-to-job match scoring in the AI Job Tracker project. The system stores a user resume as raw text, stores jobs in PostgreSQL, and uses an AI service to compare the saved resume against a selected job description. The result includes match score, matching skills, missing skills, resume strengths, improvement suggestions, and a focus summary. Match results are stored in a dedicated database table with versioning so repeated runs can be compared. This feature demonstrates orchestration across user data, job ownership checks, AI prompt handling, structured response validation, repository persistence, and PostgreSQL JSON storage.\r\n\r\nExperienced with OpenAI API integration in backend workflows. Designed prompts that request structured JSON responses, parsed AI-generated JSON, validated responses with Pydantic models, handled missing fields, applied default values where appropriate, and stored validated output in PostgreSQL. Used AI integration to support job description analysis and resume matching. Designed error handling around empty AI responses, malformed output, simulated AI failures, and downstream persistence errors. Comfortable treating AI as an external service dependency that requires validation, logging, retries, and failure-safe design.\r\n\r\nUsed Git and Bitbucket for version control, branching, commits, merges, remote tracking, and release management. Followed incremental feature branching workflows for backend development, including separate branches for job status, resume storage, resume endpoints, AI prompt and schema updates, endpoint wiring, and documentation. Comfortable resolving branch naming issues, pushing renamed branches, deleting local and remote branches, tagging stable releases, and preserving clean commit history. Used Jira for issue tracking, development planning, task breakdown, bug tracking, and collaboration in Agile environments.\r\n\r\nWorked with Java and Spring Boot in backend systems connected to databases and data workflows. Built APIs, service classes, repository layers, DTOs, validation logic, exception handling, and database-backed business features. Used Java services to process records, expose data, integrate with other systems, and support internal application workflows. This backend experience supports data engineering work by improving understanding of API contracts, transactional systems, database access patterns, service boundaries, and production application behavior.\r\n\r\nCollaborated with backend engineers, data engineers, analysts, QA teams, product owners, operations teams, and cloud/platform teams. Participated in requirements gathering, technical design, debugging sessions, code reviews, testing, production support, and release validation. Able to communicate clearly about pipeline behavior, data issues, API failures, database constraints, and cloud configuration problems. Strong ability to connect business requirements with practical technical implementation.\r\n\r\nTechnical skills include Python, SQL, PostgreSQL, Java, Spring Boot, FastAPI, SQLAlchemy, Alembic, REST APIs, JSON, Pydantic, AWS Lambda, API Gateway, S3, IAM basics, Databricks, Apache Spark fundamentals, ETL workflows, data ingestion, batch processing, data transformation, data validation, cloud storage, backend APIs, structured logging, request tracing, exception handling, Git, Bitbucket, Jira, Postman, Swagger, Linux, WSL, environment configuration, and production troubleshooting.\r\n\r\nData engineering strengths include building reliable ingestion workflows, writing maintainable Python transformation logic, designing SQL-backed validation checks, debugging pipeline failures, working with cloud storage, supporting batch processing, and building backend APIs around data workflows. Cloud strengths include AWS serverless services, S3-based storage patterns, environment-based configuration, deployment troubleshooting, and cloud-integrated automation. Backend strengths include API design, service-layer architecture, repository patterns, authentication, logging, error handling, and database persistence.\r\n\r\nInterested in data engineering, cloud data engineering, backend data platform engineering, analytics engineering, and AI-enabled data platform roles. Strong fit for teams building cloud data pipelines, backend data services, API-driven ingestion platforms, operational data workflows, data automation tools, and systems that combine backend engineering with data processing and cloud infrastructure.",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/resume",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "resume"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Resume U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Resume returned U1\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.resume_text).to.be.a(\"string\");\r",
+                  "    pm.expect(json.data.resume_text.length).to.be.above(50);\r",
+                  "    pm.expect(json.data.resume_length).to.be.above(50);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/resume",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "resume"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Resume U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Resume returned U2\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.resume_text).to.be.a(\"string\");\r",
+                  "    pm.expect(json.data.resume_text.length).to.be.above(50);\r",
+                  "    pm.expect(json.data.resume_text.length).to.be.above(50);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/resume",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "resume"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -307,77 +691,23 @@
       "name": "3. Jobs",
       "item": [
         {
-          "name": "Analyze Updated Jobs",
-          "item": [
-            {
-              "name": "Analyze Job Structured U1",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/ai/jobs/{{job_id}}/analyze",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "ai",
-                    "jobs",
-                    "{{job_id}}",
-                    "analyze"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Analyze Job Structured U2",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token2}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/ai/jobs/{{job2_id}}/analyze",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "ai",
-                    "jobs",
-                    "{{job2_id}}",
-                    "analyze"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
           "name": "Create Job Structured U1",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Structured Job U1 created\", function(){\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.job.id).to.exist;\r",
+                  "    pm.expect(json.data.job.title).to.exist;\r",
+                  "    pm.expect(json.data.job.company).to.exist;\r",
+                  "    pm.expect(json.data.job.status).to.exist;\r",
+                  "});\r",
+                  "\r",
                   "pm.environment.set(\"job_id\", pm.response.json().data.job.id);"
                 ],
                 "type": "text/javascript",
@@ -428,6 +758,17 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Structured Job U2 created\", function(){\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.job.id).to.exist;\r",
+                  "    pm.expect(json.data.job.title).to.exist;\r",
+                  "    pm.expect(json.data.job.company).to.exist;\r",
+                  "    pm.expect(json.data.job.status).to.exist;\r",
+                  "});\r",
+                  "\r",
                   "pm.environment.set(\"job2_id\", pm.response.json().data.job.id);"
                 ],
                 "type": "text/javascript",
@@ -473,6 +814,25 @@
         },
         {
           "name": "Get Jobs U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job lists returned for U1\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data).to.be.an(\"array\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -501,6 +861,25 @@
         },
         {
           "name": "Get Jobs U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job lists returned for U2\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data).to.be.an(\"array\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -529,6 +908,29 @@
         },
         {
           "name": "Get Job By JobId U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job returned by U1 Job ID\", function(){\r",
+                  "    pm.response.to.have.status(200);    \r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.id).to.exist;\r",
+                  "    pm.expect(json.data.title).to.exist;\r",
+                  "    pm.expect(json.data.company).to.exist;\r",
+                  "    pm.expect(json.data.status).to.exist;\r",
+                  "})\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           },
@@ -564,6 +966,28 @@
         },
         {
           "name": "Get Job By JobId U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job returned by U2 Job ID\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.id).to.exist;\r",
+                  "    pm.expect(json.data.title).to.exist;\r",
+                  "    pm.expect(json.data.company).to.exist;\r",
+                  "    pm.expect(json.data.status).to.exist;\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           },
@@ -599,6 +1023,26 @@
         },
         {
           "name": "Update Job U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job updated U1\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.id).to.exist;\r",
+                  "    pm.expect(json.data.description).to.be.a(\"string\");\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -614,7 +1058,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"title\": \"Backend Software Engineer\",\r\n  \"company\": \"NovaTech Solutions\",\r\n  \"description\": \"NovaTech Solutions is seeking a Backend Software Engineer to design and maintain scalable RESTful APIs using FastAPI and PostgreSQL. The role involves building secure microservices, optimizing database queries, integrating Kafka-based event systems, and deploying containerized services with Docker, Kubernetes, and AWS. Candidates should have strong Python development experience, familiarity with Redis caching, CI/CD pipelines, distributed systems concepts, and performance optimization techniques. Experience mentoring junior developers and improving system observability is highly preferred.\"\r\n}",
+              "raw": "{\r\n  \"title\": \"Backend Software Engineer\",\r\n  \"company\": \"Google\",\r\n  \"description\": \"NovaTech Solutions is seeking a Backend Software Engineer to design and maintain scalable RESTful APIs using FastAPI and PostgreSQL. The role involves building secure microservices, optimizing database queries, integrating Kafka-based event systems, and deploying containerized services with Docker, Kubernetes, and AWS. Candidates should have strong Python development experience, familiarity with Redis caching, CI/CD pipelines, distributed systems concepts, and performance optimization techniques. Experience mentoring junior developers and improving system observability is highly preferred.\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -636,6 +1080,26 @@
         },
         {
           "name": "Update Job U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job updated U2\", function(){\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.id).to.exist;\r",
+                  "    pm.expect(json.data.description).to.be.a(\"string\");\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -672,7 +1136,26 @@
           "response": []
         },
         {
-          "name": "Delete Job U1 (Optional)",
+          "name": "Update Job Status U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job status U1 updated\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.status).to.eql(\"Applied\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -684,27 +1167,52 @@
                 }
               ]
             },
-            "method": "DELETE",
+            "method": "PATCH",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": ""
+              "raw": "{\r\n    \"status\": \"Applied\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
-              "raw": "{{base_url}}/jobs/{{job_id}}",
+              "raw": "{{base_url}}/jobs/{{job_id}}/status",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "jobs",
-                "{{job_id}}"
+                "{{job_id}}",
+                "status"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "Delete Job U2 (Optional)",
+          "name": "Update Job Status U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job status U2 updated\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.status).to.eql(\"Applied\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -716,20 +1224,366 @@
                 }
               ]
             },
-            "method": "DELETE",
+            "method": "PATCH",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": ""
+              "raw": "{\r\n    \"status\": \"Applied\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
-              "raw": "{{base_url}}/jobs/{{job2_id}}",
+              "raw": "{{base_url}}/jobs/{{job2_id}}/status",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "jobs",
-                "{{job2_id}}"
+                "{{job2_id}}",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Analyze Job Structured U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"AI analysis completed or handled gracefully for U2\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.job).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Analysis shape is valid when present for U2\", function () {\r",
+                  "    const analysis = json.data.analysis;\r",
+                  "    if (analysis !== null) {\r",
+                  "        pm.expect(analysis.analysis || analysis).to.exist;\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ai/jobs/{{job2_id}}/analyze",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "jobs",
+                "{{job2_id}}",
+                "analyze"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Analyze Job Structured U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"AI analysis completed or handled gracefully U1\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.job).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Analysis shape is valid when present U1\", function () {\r",
+                  "    const analysis = json.data.analysis;\r",
+                  "    if (analysis !== null) {\r",
+                  "        pm.expect(analysis.analysis || analysis).to.exist;\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ai/jobs/{{job_id}}/analyze",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "jobs",
+                "{{job_id}}",
+                "analyze"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resume Match Analysis (RMA) U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Resume match U1 created\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.resume_match).to.exist;\r",
+                  "\r",
+                  "    const match = json.data.resume_match;\r",
+                  "    pm.expect(match.id).to.exist;\r",
+                  "    pm.expect(match.job_id).to.eql(Number(pm.environment.get(\"job_id\")));\r",
+                  "    pm.expect(match.version).to.be.a(\"number\");\r",
+                  "    pm.expect(match.match_score).to.be.within(0, 100);\r",
+                  "    pm.expect(match.matching_skills).to.be.an(\"array\");\r",
+                  "    pm.expect(match.missing_skills).to.be.an(\"array\");\r",
+                  "    pm.expect(match.resume_strengths).to.be.an(\"array\");\r",
+                  "    pm.expect(match.improvement_suggestions).to.be.an(\"array\");\r",
+                  "    pm.expect(match.focus_summary).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.environment.set(\"resume_match_id\", json.data.resume_match.id);\r",
+                  "pm.environment.set(\"resume_match_version\", json.data.resume_match.version);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ai/jobs/{{job_id}}/resume_match",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "jobs",
+                "{{job_id}}",
+                "resume_match"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retry RMA U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "const previousVersion = Number(pm.environment.get(\"resume_match_version\"));\r",
+                  "\r",
+                  "pm.test(\"Resume match version increments U1\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.resume_match.version).to.be.above(previousVersion);\r",
+                  "});\r",
+                  "\r",
+                  "pm.environment.set(\"resume_match_version\", json.data.resume_match.version);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ai/jobs/{{job_id}}/resume_match",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "jobs",
+                "{{job_id}}",
+                "resume_match"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RMA U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Resume match U2 created\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.resume_match).to.exist;\r",
+                  "\r",
+                  "    const match = json.data.resume_match;\r",
+                  "    pm.expect(match.job_id).to.eql(Number(pm.environment.get(\"job2_id\")));\r",
+                  "    pm.expect(match.version).to.be.a(\"number\");\r",
+                  "    pm.expect(match.match_score).to.be.within(0, 100);\r",
+                  "    pm.expect(match.matching_skills).to.be.an(\"array\");\r",
+                  "    pm.expect(match.missing_skills).to.be.an(\"array\");\r",
+                  "    pm.expect(match.improvement_suggestions).to.be.an(\"array\");\r",
+                  "    pm.expect(match.focus_summary).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.environment.set(\"resume_match2_id\", json.data.resume_match.id);\r",
+                  "pm.environment.set(\"resume_match2_version\", json.data.resume_match.version);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ai/jobs/{{job2_id}}/resume_match",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "jobs",
+                "{{job2_id}}",
+                "resume_match"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retry RMA U2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "const previousVersion = Number(pm.environment.get(\"resume_match2_version\"));\r",
+                  "\r",
+                  "pm.test(\"Resume match version increments U1\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "    pm.expect(json.data.resume_match.version).to.be.above(previousVersion);\r",
+                  "});\r",
+                  "\r",
+                  "pm.environment.set(\"resume_match2_version\", json.data.resume_match.version);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token2}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ai/jobs/{{job2_id}}/resume_match",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "jobs",
+                "{{job2_id}}",
+                "resume_match"
               ]
             }
           },
@@ -750,6 +1604,14 @@
                   "listen": "test",
                   "script": {
                     "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Raw job created\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.job.id).to.exist;\r",
+                      "});\r",
+                      "\r",
                       "pm.environment.set(\"raw_job_id\", pm.response.json().data.job.id);"
                     ],
                     "type": "text/javascript",
@@ -796,6 +1658,25 @@
             },
             {
               "name": "Get Raw Jobs U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Job lists returned for U1\", function(){\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data).to.be.an(\"array\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -823,42 +1704,27 @@
               "response": []
             },
             {
-              "name": "Get Raw Job By JobId U1",
-              "protocolProfileBehavior": {
-                "disableBodyPruning": true
-              },
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": ""
-                },
-                "url": {
-                  "raw": "{{base_url}}/jobs/{{raw_job_id}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "jobs",
-                    "{{raw_job_id}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
               "name": "Update Raw Job U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Raw job updated\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.id).to.exist;\r",
+                      "    pm.expect(json.data.description).to.be.a(\"string\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -895,7 +1761,137 @@
               "response": []
             },
             {
+              "name": "Update Raw Status U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Raw job status updated\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.status).to.eql(\"Applied\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"status\": \"Applied\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{raw_job_id}}/status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{raw_job_id}}",
+                    "status"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Raw Job By JobId U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Raw Job returned\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.id).to.exist;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{base_url}}/jobs/{{raw_job_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "jobs",
+                    "{{raw_job_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Analyze Job Raw U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Raw job analysis completed or handled gracefully\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.job).to.exist;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -925,7 +1921,27 @@
               "response": []
             },
             {
-              "name": "Delete Raw Job U1 (Optional)",
+              "name": "Resume Match Analysis Raw U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Raw job resume match created\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.resume_match).to.exist;\r",
+                      "    pm.expect(json.data.resume_match.match_score).to.be.within(0, 100);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -937,20 +1953,18 @@
                     }
                   ]
                 },
-                "method": "DELETE",
+                "method": "POST",
                 "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": ""
-                },
                 "url": {
-                  "raw": "{{base_url}}/jobs/{{raw_job_id}}",
+                  "raw": "{{base_url}}/ai/jobs/{{raw_job_id}}/resume_match",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
+                    "ai",
                     "jobs",
-                    "{{raw_job_id}}"
+                    "{{raw_job_id}}",
+                    "resume_match"
                   ]
                 }
               },
@@ -963,6 +1977,25 @@
           "item": [
             {
               "name": "Enable AIFS",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"AIFS enabled\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.message).to.include(\"enabled\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "method": "POST",
                 "header": [],
@@ -988,6 +2021,15 @@
                   "listen": "test",
                   "script": {
                     "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Raw job created even when AI fails\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.job.id).to.exist;\r",
+                      "    pm.expect(json.data.analysis).to.eql(null);\r",
+                      "});\r",
+                      "\r",
                       "pm.environment.set(\"fs_job_raw\", pm.response.json().data.job.id);"
                     ],
                     "type": "text/javascript",
@@ -1033,7 +2075,74 @@
               "response": []
             },
             {
+              "name": "Resume Match Analysis AIFS U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Resume match fails during AI failure simulation\", function () {\r",
+                      "    pm.response.to.have.status(500);\r",
+                      "    pm.expect(json.success).to.eql(false);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/{{fs_job_raw}}/resume_match",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "{{fs_job_raw}}",
+                    "resume_match"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Disable AIFS",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"AIFS disabled\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.message).to.include(\"disabled\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "method": "POST",
                 "header": [],
@@ -1054,6 +2163,25 @@
             },
             {
               "name": "Check AIFS Raw Job U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"AIFS job still exists after AI failure\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.id).to.exist;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1082,6 +2210,32 @@
             },
             {
               "name": "Analyze AIFS Raw Job U1",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"AI analysis completed or handled gracefully U1\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.job).to.exist;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Analysis shape is valid when present U1\", function () {\r",
+                      "    const analysis = json.data.analysis;\r",
+                      "    if (analysis !== null) {\r",
+                      "        pm.expect(analysis.analysis || analysis).to.exist;\r",
+                      "    }\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1111,7 +2265,27 @@
               "response": []
             },
             {
-              "name": "Delete AIFS Raw Job U1 (Optional)",
+              "name": "Retry Resume Match Analysis Raw",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Resume match succeeds after AIFS disabled\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.resume_match).to.exist;\r",
+                      "    pm.expect(json.data.resume_match.match_score).to.be.within(0, 100);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1123,16 +2297,18 @@
                     }
                   ]
                 },
-                "method": "DELETE",
+                "method": "POST",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/jobs/{{fs_job_raw}}",
+                  "raw": "{{base_url}}/ai/jobs/{{fs_job_raw}}/resume_match",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
+                    "ai",
                     "jobs",
-                    "{{fs_job_raw}}"
+                    "{{fs_job_raw}}",
+                    "resume_match"
                   ]
                 }
               },
@@ -1145,6 +2321,25 @@
           "item": [
             {
               "name": "Enable AIFS",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"AIFS enabled\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.message).to.include(\"enabled\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "method": "POST",
                 "header": [],
@@ -1170,6 +2365,15 @@
                   "listen": "test",
                   "script": {
                     "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Structured job created even when AI fails\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.job.id).to.exist;\r",
+                      "    pm.expect(json.data.analysis).to.eql(null);\r",
+                      "});\r",
+                      "\r",
                       "pm.environment.set(\"fs_job_struct\", pm.response.json().data.job.id);"
                     ],
                     "type": "text/javascript",
@@ -1214,7 +2418,74 @@
               "response": []
             },
             {
+              "name": "Resume Match Analysis AIFS U2",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Resume match fails during AI failure simulation\", function () {\r",
+                      "    pm.response.to.have.status(500);\r",
+                      "    pm.expect(json.success).to.eql(false);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token2}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/ai/jobs/{{fs_job_struct}}/resume_match",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "ai",
+                    "jobs",
+                    "{{fs_job_struct}}",
+                    "resume_match"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Disable AIFS",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"AIFS disabled\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.message).to.include(\"disabled\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "method": "POST",
                 "header": [],
@@ -1235,6 +2506,25 @@
             },
             {
               "name": "Check AIFS Structure Job U2",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"AIFS job still exists after AI failure\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.id).to.exist;\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1263,6 +2553,32 @@
             },
             {
               "name": "Analyze Job Failed AI Sim",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"AI analysis completed or handled gracefully U1\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.job).to.exist;\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Analysis shape is valid when present U1\", function () {\r",
+                      "    const analysis = json.data.analysis;\r",
+                      "    if (analysis !== null) {\r",
+                      "        pm.expect(analysis.analysis || analysis).to.exist;\r",
+                      "    }\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1292,7 +2608,27 @@
               "response": []
             },
             {
-              "name": "Delete AIFS Structure Job U2 (Optional)",
+              "name": "Retry Resume Match Analysis Struct",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Resume match succeeds after AIFS disabled\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "    pm.expect(json.success).to.eql(true);\r",
+                      "    pm.expect(json.data.resume_match).to.exist;\r",
+                      "    pm.expect(json.data.resume_match.match_score).to.be.within(0, 100);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "auth": {
                   "type": "bearer",
@@ -1304,51 +2640,18 @@
                     }
                   ]
                 },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/jobs/{{fs_job_struct}}",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "jobs",
-                    "{{fs_job_struct}}"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Analyze Job (Created/ Failed Sim / Re-Version",
-          "item": [
-            {
-              "name": "Analyze Job Any",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
                 "method": "POST",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/ai/jobs/54/analyze",
+                  "raw": "{{base_url}}/ai/jobs/{{fs_job_struct}}/resume_match",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "ai",
                     "jobs",
-                    "54",
-                    "analyze"
+                    "{{fs_job_struct}}",
+                    "resume_match"
                   ]
                 }
               },
@@ -1366,6 +2669,25 @@
           "item": [
             {
               "name": "Duplicate Username",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Duplicate username rejected\", function () {\r",
+                      "    pm.response.to.have.status(400);\r",
+                      "    pm.expect(json.success).to.eql(false);\r",
+                      "    pm.expect(json.message).to.include(\"Username\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "method": "POST",
                 "header": [],
@@ -1393,6 +2715,25 @@
             },
             {
               "name": "Duplicate Email",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Duplicate email rejected\", function () {\r",
+                      "    pm.response.to.have.status(400);\r",
+                      "    pm.expect(json.success).to.eql(false);\r",
+                      "    pm.expect(json.message).to.include(\"Email\");\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
               "request": {
                 "method": "POST",
                 "header": [],
@@ -1436,7 +2777,13 @@
                   "listen": "test",
                   "script": {
                     "exec": [
-                      ""
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Invalid password rejected\", function () {\r",
+                      "    pm.response.to.have.status(401);\r",
+                      "    pm.expect(json.success).to.eql(false);\r",
+                      "    pm.expect(json.message).to.include(\"Invalid credentials\");\r",
+                      "});"
                     ],
                     "type": "text/javascript",
                     "packages": {},
@@ -1476,7 +2823,12 @@
                   "listen": "test",
                   "script": {
                     "exec": [
-                      ""
+                      "const json = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Invalid token rejected\", function () {\r",
+                      "    pm.response.to.have.status(401);\r",
+                      "    pm.expect(json.success).to.eql(false);\r",
+                      "});"
                     ],
                     "type": "text/javascript",
                     "packages": {},
@@ -1524,7 +2876,9 @@
                   "listen": "test",
                   "script": {
                     "exec": [
-                      ""
+                      "pm.test(\"Missing token rejected\", function () {\r",
+                      "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);\r",
+                      "});"
                     ],
                     "type": "text/javascript",
                     "packages": {},
@@ -1568,6 +2922,25 @@
               "item": [
                 {
                   "name": "Get Job U1  by U2",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const json = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Ownership violation rejected as not found on GET\", function () {\r",
+                          "    pm.response.to.have.status(404);\r",
+                          "    pm.expect(json.success).to.eql(false);\r",
+                          "    pm.expect(json.message).to.include(\"Job not found\");\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
                   "protocolProfileBehavior": {
                     "disableBodyPruning": true
                   },
@@ -1603,6 +2976,25 @@
                 },
                 {
                   "name": "Update Job U1 by U2",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const json = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Ownership violation rejected as not found on UPDATE\", function () {\r",
+                          "    pm.response.to.have.status(404);\r",
+                          "    pm.expect(json.success).to.eql(false);\r",
+                          "    pm.expect(json.message).to.include(\"Job not found\");\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
                   "request": {
                     "auth": {
                       "type": "bearer",
@@ -1640,6 +3032,25 @@
                 },
                 {
                   "name": "Delete Job U1 by U2",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const json = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Ownership violation rejected as not found on DELETE\", function () {\r",
+                          "    pm.response.to.have.status(404);\r",
+                          "    pm.expect(json.success).to.eql(false);\r",
+                          "    pm.expect(json.message).to.include(\"Job not found\");\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
                   "request": {
                     "auth": {
                       "type": "bearer",
@@ -1676,13 +3087,15 @@
               "name": "Job Schema Violations",
               "item": [
                 {
-                  "name": "Create Job",
+                  "name": "Invalid Create",
                   "event": [
                     {
                       "listen": "test",
                       "script": {
                         "exec": [
-                          ""
+                          "pm.test(\"Invalid job schema create rejected\", function () {\r",
+                          "    pm.response.to.have.status(422);\r",
+                          "});"
                         ],
                         "type": "text/javascript",
                         "packages": {},
@@ -1726,7 +3139,22 @@
                   "response": []
                 },
                 {
-                  "name": "Update Job U2",
+                  "name": "Invalid Update",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Invalid job schema update rejected\", function () {\r",
+                          "    pm.response.to.have.status(422);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
                   "request": {
                     "auth": {
                       "type": "bearer",
@@ -1761,64 +3189,332 @@
                     }
                   },
                   "response": []
+                },
+                {
+                  "name": "Invalid Job Status",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Invalid job status rejected\", function () {\r",
+                          "    pm.response.to.have.status(422);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n    \"status\": \"Random Status\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/jobs/{{job_id}}/status",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "jobs",
+                        "{{job_id}}",
+                        "status"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Invalid Job Length",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Job description too long\", function () {\r",
+                          "    pm.response.to.have.status(413);\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "Principal Enterprise AI Platform Infrastructure Reliability Engineering Architect\r\nInternational Advanced Artificial Intelligence Cybersecurity Financial Technology Solutions Consortium\r\nWe are seeking a Senior Backend Engineer to join our engineering organization and help design, develop, maintain, and scale high-performance backend systems that support mission-critical enterprise workflows across distributed cloud environments. The successful candidate will work closely with software engineers, infrastructure teams, product managers, DevOps specialists, QA engineers, and AI platform teams to deliver reliable, secure, observable, and scalable services used by thousands of users across multiple regions and deployment environments.\r\n\r\nResponsibilities include building and maintaining RESTful APIs using FastAPI and Python, designing efficient relational database schemas using PostgreSQL, optimizing SQL queries for performance and scalability, implementing caching strategies with Redis, integrating asynchronous workflows using Kafka or RabbitMQ, deploying containerized workloads using Docker and Kubernetes, and managing infrastructure deployments on AWS cloud platforms. The engineer will also contribute to system design reviews, architectural discussions, CI/CD automation, production observability, monitoring strategies, incident response processes, and backend reliability initiatives.\r\n\r\nCandidates should have strong experience with backend software engineering principles, microservices architecture, distributed systems design, fault-tolerant systems, secure API development, token-based authentication systems, and scalable cloud-native infrastructure. Experience with OpenAI integrations, prompt engineering workflows, vector databases, retrieval augmented generation systems, AI-powered automation pipelines, and observability tooling such as Prometheus and Grafana is highly desirable.\r\n\r\nThe role requires collaboration across cross-functional engineering teams to deliver maintainable and extensible systems aligned with evolving business requirements. Engineers will participate in sprint planning, code reviews, technical design documentation, architecture reviews, mentoring sessions, and deployment planning activities. The ideal candidate demonstrates strong communication skills, ownership mentality, engineering discipline, problem-solving ability, debugging expertise, and comfort working in fast-moving product environments with ambiguous requirements.\r\n\r\nAdditional responsibilities include designing resilient retry workflows, implementing structured logging systems, improving error handling strategies, analyzing production incidents, participating in root cause analysis investigations, improving backend testability, contributing to deployment automation, optimizing infrastructure cost efficiency, and enhancing system reliability under production traffic loads.\r\n\r\nThe engineer will also contribute to internal developer tooling, API standardization efforts, schema validation improvements, observability instrumentation, AI evaluation workflows, deployment pipelines, operational dashboards, and internal platform reliability initiatives. Familiarity with software development lifecycle practices, agile engineering methodologies, Git-based collaboration workflows, and modern API development standards is expected.\r\n\r\nPreferred qualifications include experience with scalable SaaS systems, event-driven architecture patterns, distributed caching systems, production AI workflows, LLM application development, backend performance optimization, infrastructure automation, container orchestration systems, asynchronous processing pipelines, and enterprise security practices. Exposure to CI/CD tooling, infrastructure-as-code concepts, monitoring pipelines, incident management practices, and cloud networking fundamentals is considered an advantage.\r\n\r\nEngineers in this role will work closely with senior technical leadership to evolve the backend platform architecture and improve scalability, resiliency, maintainability, and operational excellence across multiple services and environments. The successful candidate should demonstrate the ability to independently manage technical projects, communicate architectural tradeoffs clearly, mentor junior developers, and contribute to engineering culture improvements across the organization.\r\n\r\nThis role requires strong attention to detail, ownership of production systems, and the ability to balance rapid feature delivery with long-term maintainability and platform reliability. Candidates should be comfortable working across application layers, debugging distributed systems issues, participating in operational support rotations, and continuously improving engineering processes and tooling. The organization values engineers who proactively identify system risks, propose scalable solutions, and contribute to a collaborative and growth-oriented engineering environment.\r\n\r\nWe are also seeking candidates who are comfortable integrating AI-powered tooling into development workflows and who understand the operational implications of deploying AI-enabled systems into production environments. Familiarity with AI governance considerations, prompt evaluation strategies, API reliability concerns, model fallback approaches, and observability requirements for AI workflows is considered highly valuable for this role.\r\n\r\nThe successful candidate will contribute directly to backend platform modernization initiatives, distributed workflow orchestration systems, cloud-native infrastructure evolution, AI integration services, internal platform APIs, authentication and authorization improvements, and long-term scalability planning efforts. Engineers who thrive in ownership-driven environments and enjoy building reliable systems at scale are encouraged to apply.\r\n\r\nWe are seeking a Senior Backend Engineer to join our engineering organization and help design, develop, maintain, and scale high-performance backend systems that support mission-critical enterprise workflows across distributed cloud environments. The successful candidate will work closely with software engineers, infrastructure teams, product managers, DevOps specialists, QA engineers, and AI platform teams to deliver reliable, secure, observable, and scalable services used by thousands of users across multiple regions and deployment environments.\r\n\r\nResponsibilities include building and maintaining RESTful APIs using FastAPI and Python, designing efficient relational database schemas using PostgreSQL, optimizing SQL queries for performance and scalability, implementing caching strategies with Redis, integrating asynchronous workflows using Kafka or RabbitMQ, deploying containerized workloads using Docker and Kubernetes, and managing infrastructure deployments on AWS cloud platforms. The engineer will also contribute to system design reviews, architectural discussions, CI/CD automation, production observability, monitoring strategies, incident response processes, and backend reliability initiatives.",
+                      "options": {
+                        "raw": {
+                          "language": "text"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/ai/jobs/raw",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "ai",
+                        "jobs",
+                        "raw"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
               ]
             }
           ]
         },
         {
-          "name": "Create and Analyze Raw",
+          "name": "AI Analysis",
           "item": [
             {
-              "name": "Create Raw Job U1",
-              "event": [
+              "name": "Invalid Resume Match Analysis (RMA)",
+              "item": [
                 {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "pm.environment.set(\"fs_job_raw\", pm.response.json().data.job.id);"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
+                  "name": "Login User U3",
+                  "event": [
                     {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          ""
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    },
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const json = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Login U3 succesful\", function(){\r",
+                          "    pm.response.to.have.status(200);\r",
+                          "    pm.expect(json.success).to.eql(true);\r",
+                          "    pm.expect(json.data.access_token).to.be.a(\"string\");\r",
+                          "    pm.expect(json.data.token_type).to.eql(\"bearer\");\r",
+                          "});\r",
+                          "\r",
+                          "pm.environment.set(\"token3\", pm.response.json().data.access_token);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
                     }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "Principal Enterprise AI Platform Infrastructure Reliability Engineering Architect\r\nInternational Advanced Artificial Intelligence Cybersecurity Financial Technology Solutions Consortium\r\nWe are seeking a Senior Backend Engineer to join our engineering organization and help design, develop, maintain, and scale high-performance backend systems that support mission-critical enterprise workflows across distributed cloud environments. The successful candidate will work closely with software engineers, infrastructure teams, product managers, DevOps specialists, QA engineers, and AI platform teams to deliver reliable, secure, observable, and scalable services used by thousands of users across multiple regions and deployment environments.\r\n\r\nResponsibilities include building and maintaining RESTful APIs using FastAPI and Python, designing efficient relational database schemas using PostgreSQL, optimizing SQL queries for performance and scalability, implementing caching strategies with Redis, integrating asynchronous workflows using Kafka or RabbitMQ, deploying containerized workloads using Docker and Kubernetes, and managing infrastructure deployments on AWS cloud platforms. The engineer will also contribute to system design reviews, architectural discussions, CI/CD automation, production observability, monitoring strategies, incident response processes, and backend reliability initiatives.\r\n\r\nCandidates should have strong experience with backend software engineering principles, microservices architecture, distributed systems design, fault-tolerant systems, secure API development, token-based authentication systems, and scalable cloud-native infrastructure. Experience with OpenAI integrations, prompt engineering workflows, vector databases, retrieval augmented generation systems, AI-powered automation pipelines, and observability tooling such as Prometheus and Grafana is highly desirable.\r\n\r\nThe role requires collaboration across cross-functional engineering teams to deliver maintainable and extensible systems aligned with evolving business requirements. Engineers will participate in sprint planning, code reviews, technical design documentation, architecture reviews, mentoring sessions, and deployment planning activities. The ideal candidate demonstrates strong communication skills, ownership mentality, engineering discipline, problem-solving ability, debugging expertise, and comfort working in fast-moving product environments with ambiguous requirements.\r\n\r\nAdditional responsibilities include designing resilient retry workflows, implementing structured logging systems, improving error handling strategies, analyzing production incidents, participating in root cause analysis investigations, improving backend testability, contributing to deployment automation, optimizing infrastructure cost efficiency, and enhancing system reliability under production traffic loads.\r\n\r\nThe engineer will also contribute to internal developer tooling, API standardization efforts, schema validation improvements, observability instrumentation, AI evaluation workflows, deployment pipelines, operational dashboards, and internal platform reliability initiatives. Familiarity with software development lifecycle practices, agile engineering methodologies, Git-based collaboration workflows, and modern API development standards is expected.\r\n\r\nPreferred qualifications include experience with scalable SaaS systems, event-driven architecture patterns, distributed caching systems, production AI workflows, LLM application development, backend performance optimization, infrastructure automation, container orchestration systems, asynchronous processing pipelines, and enterprise security practices. Exposure to CI/CD tooling, infrastructure-as-code concepts, monitoring pipelines, incident management practices, and cloud networking fundamentals is considered an advantage.\r\n\r\nEngineers in this role will work closely with senior technical leadership to evolve the backend platform architecture and improve scalability, resiliency, maintainability, and operational excellence across multiple services and environments. The successful candidate should demonstrate the ability to independently manage technical projects, communicate architectural tradeoffs clearly, mentor junior developers, and contribute to engineering culture improvements across the organization.\r\n\r\nThis role requires strong attention to detail, ownership of production systems, and the ability to balance rapid feature delivery with long-term maintainability and platform reliability. Candidates should be comfortable working across application layers, debugging distributed systems issues, participating in operational support rotations, and continuously improving engineering processes and tooling. The organization values engineers who proactively identify system risks, propose scalable solutions, and contribute to a collaborative and growth-oriented engineering environment.\r\n\r\nWe are also seeking candidates who are comfortable integrating AI-powered tooling into development workflows and who understand the operational implications of deploying AI-enabled systems into production environments. Familiarity with AI governance considerations, prompt evaluation strategies, API reliability concerns, model fallback approaches, and observability requirements for AI workflows is considered highly valuable for this role.\r\n\r\nThe successful candidate will contribute directly to backend platform modernization initiatives, distributed workflow orchestration systems, cloud-native infrastructure evolution, AI integration services, internal platform APIs, authentication and authorization improvements, and long-term scalability planning efforts. Engineers who thrive in ownership-driven environments and enjoy building reliable systems at scale are encouraged to apply.\r\n\r\nWe are seeking a Senior Backend Engineer to join our engineering organization and help design, develop, maintain, and scale high-performance backend systems that support mission-critical enterprise workflows across distributed cloud environments. The successful candidate will work closely with software engineers, infrastructure teams, product managers, DevOps specialists, QA engineers, and AI platform teams to deliver reliable, secure, observable, and scalable services used by thousands of users across multiple regions and deployment environments.\r\n\r\nResponsibilities include building and maintaining RESTful APIs using FastAPI and Python, designing efficient relational database schemas using PostgreSQL, optimizing SQL queries for performance and scalability, implementing caching strategies with Redis, integrating asynchronous workflows using Kafka or RabbitMQ, deploying containerized workloads using Docker and Kubernetes, and managing infrastructure deployments on AWS cloud platforms. The engineer will also contribute to system design reviews, architectural discussions, CI/CD automation, production observability, monitoring strategies, incident response processes, and backend reliability initiatives.",
-                  "options": {
-                    "raw": {
-                      "language": "text"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/ai/jobs/raw",
-                  "host": [
-                    "{{base_url}}"
                   ],
-                  "path": [
-                    "ai",
-                    "jobs",
-                    "raw"
-                  ]
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"email\": \"sean4@test.com\",\r\n  \"password\": \"sean4@123\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/auth/login",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "auth",
+                        "login"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Create Job U3",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.environment.set(\"job3_id\", pm.response.json().data.job.id);"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token3}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"AI Platform Engineer\",\r\n  \"company\": \"Vertex Analytics\",\r\n  \"description\": \"Vertex Analytics is hiring an AI Platform Engineer to support the development of AI-powered workflow automation tools. Responsibilities include integrating OpenAI APIs, building backend services with FastAPI, maintaining PostgreSQL databases, and implementing reliable error handling for asynchronous processing pipelines. Applicants should have experience with Python, Docker, cloud deployment practices, API security, and prompt engineering fundamentals. Familiarity with machine learning infrastructure and observability tooling is considered a strong advantage.\"\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/jobs/",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "jobs",
+                        ""
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "RMA for U1 Job by U3",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const json = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Resume match ownership violation rejected\", function () {\r",
+                          "    pm.response.to.have.status(404);\r",
+                          "    pm.expect(json.success).to.eql(false);\r",
+                          "    pm.expect(json.message).to.include(\"Job not found\");\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token3}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/ai/jobs/{{job_id}}/resume_match",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "ai",
+                        "jobs",
+                        "{{job_id}}",
+                        "resume_match"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Invalid RMA",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "const json = pm.response.json();\r",
+                          "\r",
+                          "pm.test(\"Resume match without resume rejected\", function () {\r",
+                          "    pm.response.to.have.status(400);\r",
+                          "    pm.expect(json.success).to.eql(false);\r",
+                          "    pm.expect(json.message).to.include(\"resume\");\r",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token3}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/ai/jobs/{{job3_id}}/resume_match",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "ai",
+                        "jobs",
+                        "{{job3_id}}",
+                        "resume_match"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
-              },
-              "response": []
+              ]
             }
           ]
         }
@@ -1829,6 +3525,24 @@
       "item": [
         {
           "name": "Delete Job U1 Structured",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job deleted\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -1861,6 +3575,24 @@
         },
         {
           "name": "Delete Job U2 Structured",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job deleted\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -1893,6 +3625,24 @@
         },
         {
           "name": "Delete Raw Job U1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job deleted\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -1925,6 +3675,24 @@
         },
         {
           "name": "Delete Job U1 (Sim-Raw)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job deleted\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -1953,6 +3721,24 @@
         },
         {
           "name": "Delete Job U2 (Sim-Structured)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Job deleted\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    pm.expect(json.success).to.eql(true);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -1980,6 +3766,47 @@
           "response": []
         }
       ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "const requestUrl = pm.request.url.toString();\r",
+          "\r",
+          "if(!requestUrl.includes(\"/docs\")){\r",
+          "   pm.test(\"Response status is recognized\", function() {\r",
+          "    pm.expect(pm.response.code).to.be.oneOf([\r",
+          "        200, 201, 400, 401, 403, 404, 413, 422, 500\r",
+          "        ]);\r",
+          "   });\r",
+          "\r",
+          "   const contentType = pm.response.headers.get(\"Content-Type\")\r",
+          "   || \"\";\r",
+          "\r",
+          "   if(contentType.includes(\"application/json\")){\r",
+          "    pm.test(\"JSON response is valid\", function(){\r",
+          "        pm.response.to.have.jsonBody();\r",
+          "    });\r",
+          "   }\r",
+          "}"
+        ]
+      }
     }
   ]
 }

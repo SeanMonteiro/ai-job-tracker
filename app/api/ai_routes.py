@@ -24,7 +24,7 @@ def analyze_existing_job(
     result = job_pipeline_service.analyze_existing_job(job_id, current_user.id)
     return success_response(data=result)
 
-@router.post("jobs/{jobs_id}/resume_match")
+@router.post("/jobs/{job_id}/resume_match")
 def match_resume_to_job(
     job_id: int, 
     job_pipeline_service: JobPipelineService = Depends(get_job_pipeline_service),
